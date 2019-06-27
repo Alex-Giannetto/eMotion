@@ -19,7 +19,7 @@ class AdministratorController extends AbstractController
     /**
      * @Route("/administrator/edit", name="editAdministrator")
      */
-    public function edit()
+    public function editClient()
     {
         return $this->render('administrator/editClient.html.twig',[
             'controller_name' => 'Partie Edit'
