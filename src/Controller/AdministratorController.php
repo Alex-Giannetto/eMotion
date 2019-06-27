@@ -39,7 +39,7 @@ class AdministratorController extends AbstractController
     /**
      * @Route("/administrator/listVehicle", name="listVehicle")
      */
-    public function listVehicle()
+    public function listVehicleOk()
     {
         return $this->render('administrator/listVehicle.html.twig', [
             'controller_name' => 'Affiche de la liste des vehicules'
