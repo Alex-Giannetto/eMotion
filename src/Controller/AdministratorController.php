@@ -37,12 +37,22 @@ class AdministratorController extends AbstractController
     }
 
     /**
-     * @Route("/administrator/listVehicle", name="listVehicle")
+     * @Route("/administrator/listVehicleOk", name="listVehicle")
      */
     public function listVehicleOk()
     {
-        return $this->render('administrator/listVehicle.html.twig', [
-            'controller_name' => 'Affiche de la liste des vehicules'
+        return $this->render('administrator/listVehicleOk.html.twig', [
+            'controller_name' => 'Affiche de la liste des vehicules disponnible'
+        ]);
+    }
+
+    /**
+     * @Route("/administrator/listVehicleNone", name="listVehicle")
+     */
+    public function listVehicleNone()
+    {
+        return $this->render('administrator/listVehicleNone.html.twig', [
+            'controller_name' => 'Affiche de la liste des vehicules louer'
         ]);
     }
 }
