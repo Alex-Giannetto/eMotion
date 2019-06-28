@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use phpDocumentor\Reflection\Types\String_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AdministratorController extends AbstractController
@@ -37,22 +38,13 @@ class AdministratorController extends AbstractController
     }
 
     /**
-     * @Route("/administrator/listVehicleOk", name="listVehicle")
+     * @Route("/administrator/listVehicle/{param}", name="listVehicle")
      */
-    public function listVehicleOk()
+    public function listVehicle(string $param)
     {
-        return $this->render('administrator/listVehicleOk.html.twig', [
-            'controller_name' => 'Affiche de la liste des vehicules disponnible'
-        ]);
-    }
+        return $this->render('administrator/listVehicle.html.twig', [
 
-    /**
-     * @Route("/administrator/listVehicleNone", name="listVehicle")
-     */
-    public function listVehicleNone()
-    {
-        return $this->render('administrator/listVehicleNone.html.twig', [
-            'controller_name' => 'Affiche de la liste des vehicules louer'
+            'controller_name' => 'Affiche de la liste des vehicules disponnible'
         ]);
     }
 }
