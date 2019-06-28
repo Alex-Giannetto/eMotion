@@ -102,7 +102,7 @@ class Vehicule
      * @ORM\Column(type="string")
      */
 
-    private $rentability;
+    private $rentability_price;
 
     /**
      * @ORM\Column(type="boolean")
