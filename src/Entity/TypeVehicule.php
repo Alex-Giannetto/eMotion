@@ -21,7 +21,7 @@ class TypeVehicule
      * @Assert\NotBlank()
      * @ORM\Column(type="string")
      */
-    private $libelle;
+    private $label;
 
 
     public function getId(): ?int
@@ -32,17 +32,17 @@ class TypeVehicule
     /**
      * @return mixed
      */
-    public function getLibelle()
+    public function getLabel()
     {
-        return $this->libelle;
+        return $this->label;
     }
 
     /**
      * @param mixed $libelle
      */
-    public function setLibelle($libelle): void
+    public function setLabel($label): void
     {
-        $this->libelle = $libelle;
+        $this->label = $label;
     }
 
 
