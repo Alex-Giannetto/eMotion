@@ -3,9 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Faker\Provider\DateTime;
-use phpDocumentor\Reflection\Types\This;
-use phpDocumentor\Reflection\Types\Float_;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -100,6 +97,14 @@ class Vehicle
      * @ORM\JoinColumn(nullable=false)
      */
     private $vehicleType;
+
+    /**
+     * Vehicle constructor.
+     */
+    public function __construct()
+    {
+        $this->state = true;
+    }
 
 
     public function getId(): ?int
@@ -212,12 +217,12 @@ class Vehicle
     }
 
 
-    public function getPurchasingDate(): DateTime
+    public function getPurchasingDate(): \DateTime
     {
         return $this->purchasingDate;
     }
 
-    public function setPurchasingDate(DateTime $date): self
+    public function setPurchasingDate(\DateTime $date): self
     {
         $this->purchasingDate = $date;
 

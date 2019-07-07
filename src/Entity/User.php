@@ -73,6 +73,15 @@ class User implements UserInterface
      */
     private $driverLicense;
 
+    /**
+     * User constructor.
+     */
+    public function __construct()
+    {
+        $this->setRoles(['ROLE_USER']);
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;
