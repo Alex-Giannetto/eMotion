@@ -24,7 +24,8 @@ class VehicleFixtures extends Fixture
         $faker = Factory::create('fr_FR');
 
         $vehicleTypes = $this->generateVehicleType($manager);
-        $this->generateCar($manager, $faker, $vehicleTypes[0]);
+        $this->generateVehicule($manager, $faker, $vehicleTypes[0], $this->getCarModels(), 50);
+        $this->generateVehicule($manager, $faker, $vehicleTypes[1], $this->getScooterModels(), 15);
 
 
     }
@@ -46,13 +47,12 @@ class VehicleFixtures extends Fixture
         return [$car, $scooter];
     }
 
-    private function generateCar(ObjectManager $manager, Generator $faker, VehicleType $vehicleType)
+    private function generateVehicule(ObjectManager $manager, Generator $faker, VehicleType $vehicleType, array $models, int $quantity)
     {
-        $carBrandsModels = $this->getCarModels();
 
-        for ($i=0;$i<50;$i++){
-            $brand = $faker->randomElement($carBrandsModels);
-            $brandName = array_search($brand, $carBrandsModels);
+        for ($i = 0; $i <= $quantity; $i++) {
+            $brand = $faker->randomElement($models);
+            $brandName = array_search($brand, $models);
             $modelName = $faker->randomElement($brand);
 
             $car = new Vehicle();
@@ -99,5 +99,24 @@ class VehicleFixtures extends Fixture
             ],
         ];
 
+    }
+
+    private function getScooterModels(): array
+    {
+        return [
+            'Unu' => [
+                'Unu'
+            ],
+            'Gogoro' => [
+                'Gogoro'
+            ],
+            'Niu' => [
+                'Series M',
+                'Series J'
+            ],
+            'BMW' => [
+                'C Evolution'
+            ]
+        ];
     }
 }
