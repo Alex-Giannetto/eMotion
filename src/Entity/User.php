@@ -64,7 +64,7 @@ class User implements UserInterface
     private $city;
 
     /**
-     * @ORM\Column(type="string", length=5)
+     * @ORM\Column(type="string", length=6)
      */
     private $zipCode;
 
