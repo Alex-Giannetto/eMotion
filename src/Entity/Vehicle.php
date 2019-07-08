@@ -99,6 +99,12 @@ class Vehicle
     private $vehicleType;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="vehicles")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $owner;
+
+    /**
      * Vehicle constructor.
      */
     public function __construct()
@@ -290,6 +296,20 @@ class Vehicle
     {
         $this->vehicleType = $vehicleType;
 
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        if(in_array('ROLE_OWNER', $owner->getRoles())){
+            $this->owner = $owner;
+        }
+        //TODO: gérer erreur
         return $this;
     }
 

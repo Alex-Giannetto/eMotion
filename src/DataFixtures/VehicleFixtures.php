@@ -6,13 +6,28 @@ namespace App\DataFixtures;
 
 use App\Entity\Vehicle;
 use App\Entity\VehicleType;
+use App\Repository\UserRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
 
-class VehicleFixtures extends Fixture
+class VehicleFixtures extends Fixture implements DependentFixtureInterface
 {
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
+
+    /**
+     * VehicleFixtures constructor.
+     */
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
 
     /**
      * Load data fixtures with the passed EntityManager
@@ -22,10 +37,11 @@ class VehicleFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $faker = Factory::create('fr_FR');
+        $owner = $this->userRepository->find(2);
 
         $vehicleTypes = $this->generateVehicleType($manager);
-        $this->generateVehicule($manager, $faker, $vehicleTypes[0], $this->getCarModels(), 50);
-        $this->generateVehicule($manager, $faker, $vehicleTypes[1], $this->getScooterModels(), 15);
+        $this->generateVehicule($manager, $faker, $vehicleTypes[0], $this->getCarModels(), [$owner], 50);
+        $this->generateVehicule($manager, $faker, $vehicleTypes[1], $this->getScooterModels(), [$owner], 15);
 
 
     }
@@ -47,7 +63,7 @@ class VehicleFixtures extends Fixture
         return [$car, $scooter];
     }
 
-    private function generateVehicule(ObjectManager $manager, Generator $faker, VehicleType $vehicleType, array $models, int $quantity)
+    private function generateVehicule(ObjectManager $manager, Generator $faker, VehicleType $vehicleType, array $models, array $owners, int $quantity)
     {
 
         for ($i = 0; $i <= $quantity; $i++) {
@@ -59,6 +75,7 @@ class VehicleFixtures extends Fixture
             $car->setBrand($brandName);
             $car->setModel($modelName);
             $car->setVehicleType($vehicleType);
+            $car->setOwner($faker->randomElement($owners));
             $car->setColor($faker->safeColorName);
             $car->setAutonomy(rand(200, 600));
             $car->setKilometers(rand(0, 50));
@@ -75,7 +92,6 @@ class VehicleFixtures extends Fixture
 
         $manager->flush();
     }
-
 
     private function getCarModels(): array
     {
@@ -117,6 +133,19 @@ class VehicleFixtures extends Fixture
             'BMW' => [
                 'C Evolution'
             ]
+        ];
+    }
+
+    /**
+     * This method must return an array of fixtures classes
+     * on which the implementing class depends on
+     *
+     * @return array
+     */
+    public function getDependencies()
+    {
+        return [
+            UserFixtures::class
         ];
     }
 }
