@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -81,12 +83,24 @@ class User implements UserInterface
     private $vehicles;
 
     /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Rental", mappedBy="client", orphanRemoval=true)
+     */
+    private $rentals;
+
+    /**
      * User constructor.
      */
     public function __construct()
     {
         $this->setRoles(['ROLE_USER']);
         $this->vehicles = new ArrayCollection();
+        $this->setCreatedAt(new DateTime());
+        $this->rentals = new ArrayCollection();
     }
 
 
@@ -192,12 +206,12 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getBirthDate(): ?\DateTimeInterface
+    public function getBirthDate(): ?DateTimeInterface
     {
         return $this->birthDate;
     }
 
-    public function setBirthDate(\DateTimeInterface $birthDate): self
+    public function setBirthDate(DateTimeInterface $birthDate): self
     {
         $this->birthDate = $birthDate;
 
@@ -289,6 +303,49 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($vehicle->getOwner() === $this) {
                 $vehicle->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Rental[]
+     */
+    public function getRentals(): Collection
+    {
+        return $this->rentals;
+    }
+
+    public function addRental(Rental $rental): self
+    {
+        if (!$this->rentals->contains($rental)) {
+            $this->rentals[] = $rental;
+            $rental->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRental(Rental $rental): self
+    {
+        if ($this->rentals->contains($rental)) {
+            $this->rentals->removeElement($rental);
+            // set the owning side to null (unless already changed)
+            if ($rental->getClient() === $this) {
+                $rental->setClient(null);
             }
         }
 
