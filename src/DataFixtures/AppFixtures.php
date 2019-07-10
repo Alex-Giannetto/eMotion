@@ -21,9 +21,8 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $this->resetAutoIncrement('user', 'vehicle', 'vehicle_type', 'rental');
+        $this->resetAutoIncrement('user', 'car_dealer', 'vehicle', 'vehicle_type', 'rental');
     }
-
 
     /**
      * Reset the auto increment method in the database for table name passed in parameters

@@ -21,15 +21,36 @@ class CarDealerFixtures extends Fixture
     {
         $faker = Factory::create('fr_FR');
 
-        $paris = new CarDealer();
-        $paris->setName('Paris La Défense');
-        $paris->setAddress('5 Square des Corolles');
-        $paris->setCity('Courbevoie');
-        $paris->setZipcode(92400);
+        foreach ($this->getCarDealers() as $carDealerInfos) {
+            $carDealer = new CarDealer();
+            $carDealer->setName($carDealerInfos['name']);
+            $carDealer->setAddress($carDealerInfos['address']);
+            $carDealer->setCity($carDealerInfos['city']);
+            $carDealer->setZipcode($carDealerInfos['zipcode']);
 
+            $manager->persist($carDealer);
 
-        $manager->persist($paris);
+        }
+
         $manager->flush();
 
+    }
+
+    private function getCarDealers(): array
+    {
+        return [
+            'paris' => [
+                'name' => 'Paris La Défense',
+                'address' => '5 Square des Corolles',
+                'city' => 'Courbevoie',
+                'zipcode' => 92400,
+            ],
+            'Lyon' => [
+                'name' => 'Lyon',
+                'address' => '32 Rue de Condé',
+                'city' => 'Lyon',
+                'zipcode' => 69002,
+            ],
+        ];
     }
 }
