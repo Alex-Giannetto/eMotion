@@ -6,7 +6,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Vehicle;
 use App\Entity\VehicleType;
-use App\Repository\UserRepository;
+use App\Repository\CarDealerRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -16,16 +16,16 @@ use Faker\Generator;
 class VehicleFixtures extends Fixture implements DependentFixtureInterface
 {
     /**
-     * @var UserRepository
+     * @var CarDealerRepository
      */
-    private $userRepository;
+    private $carDealerRepository;
 
     /**
      * VehicleFixtures constructor.
      */
-    public function __construct(UserRepository $userRepository)
+    public function __construct(CarDealerRepository $carDealerRepository)
     {
-        $this->userRepository = $userRepository;
+        $this->carDealerRepository = $carDealerRepository;
     }
 
 
@@ -37,13 +37,11 @@ class VehicleFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager)
     {
         $faker = Factory::create('fr_FR');
-        $owner = $this->userRepository->find(2);
+        $carDealers = $this->carDealerRepository->findAll();
 
         $vehicleTypes = $this->generateVehicleType($manager);
-        $this->generateVehicule($manager, $faker, $vehicleTypes[0], $this->getCarModels(), [$owner], 50);
-        $this->generateVehicule($manager, $faker, $vehicleTypes[1], $this->getScooterModels(), [$owner], 15);
-
-
+        $this->generateVehicule($manager, $faker, $vehicleTypes[0], $this->getCarModels(), $carDealers, 50);
+        $this->generateVehicule($manager, $faker, $vehicleTypes[1], $this->getScooterModels(), $carDealers, 15);
     }
 
 
@@ -63,7 +61,7 @@ class VehicleFixtures extends Fixture implements DependentFixtureInterface
         return [$car, $scooter];
     }
 
-    private function generateVehicule(ObjectManager $manager, Generator $faker, VehicleType $vehicleType, array $models, array $owners, int $quantity)
+    private function generateVehicule(ObjectManager $manager, Generator $faker, VehicleType $vehicleType, array $models, array $carDealers, int $quantity)
     {
 
         for ($i = 0; $i <= $quantity; $i++) {
@@ -75,7 +73,6 @@ class VehicleFixtures extends Fixture implements DependentFixtureInterface
             $car->setBrand($brandName);
             $car->setModel($modelName);
             $car->setVehicleType($vehicleType);
-            $car->setOwner($faker->randomElement($owners));
             $car->setColor($faker->safeColorName);
             $car->setAutonomy(rand(200, 600));
             $car->setKilometers(rand(0, 50));
@@ -86,6 +83,7 @@ class VehicleFixtures extends Fixture implements DependentFixtureInterface
             $car->setPurchasingPrice(rand(35000, 120000));
             $car->setMatriculation(strtoupper(substr($faker->sha1, 0, 10)));
             $car->setSerialNumber(strtoupper(substr($faker->sha1, 0, 10)));
+            $car->setCarDealer($faker->randomElement($carDealers));
 
             $manager->persist($car);
         }
@@ -145,7 +143,8 @@ class VehicleFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return [
-            UserFixtures::class
+            UserFixtures::class,
+            CarDealerFixtures::class,
         ];
     }
 }

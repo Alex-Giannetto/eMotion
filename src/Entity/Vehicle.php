@@ -103,12 +103,6 @@ class Vehicle
     private $vehicleType;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="vehicles")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $owner;
-
-    /**
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
@@ -117,6 +111,12 @@ class Vehicle
      * @ORM\OneToMany(targetEntity="App\Entity\Rental", mappedBy="vehicle", orphanRemoval=true)
      */
     private $rentals;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\CarDealer", inversedBy="vehicles")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $carDealer;
 
     /**
      * Vehicle constructor.
@@ -315,20 +315,6 @@ class Vehicle
         return $this;
     }
 
-    public function getOwner(): ?User
-    {
-        return $this->owner;
-    }
-
-    public function setOwner(?User $owner): self
-    {
-        if(in_array('ROLE_OWNER', $owner->getRoles())){
-            $this->owner = $owner;
-        }
-        //TODO: gérer erreur
-        return $this;
-    }
-
     public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
@@ -368,6 +354,18 @@ class Vehicle
                 $rental->setVehicle(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCarDealer(): ?CarDealer
+    {
+        return $this->carDealer;
+    }
+
+    public function setCarDealer(?CarDealer $carDealer): self
+    {
+        $this->carDealer = $carDealer;
 
         return $this;
     }

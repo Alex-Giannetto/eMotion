@@ -78,11 +78,6 @@ class User implements UserInterface
     private $driverLicense;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Vehicle", mappedBy="owner", orphanRemoval=true)
-     */
-    private $vehicles;
-
-    /**
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
@@ -280,37 +275,6 @@ class User implements UserInterface
     public function setDriverLicense(string $driverLicense): self
     {
         $this->driverLicense = $driverLicense;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Vehicle[]
-     */
-    public function getVehicles(): Collection
-    {
-        return $this->vehicles;
-    }
-
-    public function addVehicle(Vehicle $vehicle): self
-    {
-        if (!$this->vehicles->contains($vehicle)) {
-            $this->vehicles[] = $vehicle;
-            $vehicle->setOwner($this);
-        }
-
-        return $this;
-    }
-
-    public function removeVehicle(Vehicle $vehicle): self
-    {
-        if ($this->vehicles->contains($vehicle)) {
-            $this->vehicles->removeElement($vehicle);
-            // set the owning side to null (unless already changed)
-            if ($vehicle->getOwner() === $this) {
-                $vehicle->setOwner(null);
-            }
-        }
 
         return $this;
     }

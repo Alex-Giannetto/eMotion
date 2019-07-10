@@ -43,9 +43,15 @@ class CarDealer
      */
     private $employees;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Vehicle", mappedBy="carDealer", orphanRemoval=true)
+     */
+    private $vehicles;
+
     public function __construct()
     {
         $this->employees = new ArrayCollection();
+        $this->vehicles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -126,6 +132,37 @@ class CarDealer
             // set the owning side to null (unless already changed)
             if ($employee->getCarDealer() === $this) {
                 $employee->setCarDealer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Vehicle[]
+     */
+    public function getVehicles(): Collection
+    {
+        return $this->vehicles;
+    }
+
+    public function addVehicle(Vehicle $vehicle): self
+    {
+        if (!$this->vehicles->contains($vehicle)) {
+            $this->vehicles[] = $vehicle;
+            $vehicle->setCarDealer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVehicle(Vehicle $vehicle): self
+    {
+        if ($this->vehicles->contains($vehicle)) {
+            $this->vehicles->removeElement($vehicle);
+            // set the owning side to null (unless already changed)
+            if ($vehicle->getCarDealer() === $this) {
+                $vehicle->setCarDealer(null);
             }
         }
 
