@@ -21,7 +21,7 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $this->resetAutoIncrement('user', 'vehicle' ,'vehicle_type');
+        $this->resetAutoIncrement('user', 'vehicle', 'vehicle_type', 'rental');
     }
 
 

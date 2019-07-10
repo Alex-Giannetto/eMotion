@@ -40,7 +40,7 @@ class Rental
     private $estimatedReturnDate;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $realReturnDate;
 
@@ -53,6 +53,15 @@ class Rental
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
+
+    /**
+     * Rental constructor.
+     */
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
+
 
     public function getId(): ?int
     {
