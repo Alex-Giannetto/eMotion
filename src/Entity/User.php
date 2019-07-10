@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -64,7 +68,7 @@ class User implements UserInterface
     private $city;
 
     /**
-     * @ORM\Column(type="string", length=5)
+     * @ORM\Column(type="string", length=6)
      */
     private $zipCode;
 
@@ -72,6 +76,34 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=30)
      */
     private $driverLicense;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Rental", mappedBy="client", orphanRemoval=true)
+     */
+    private $rentals;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\CarDealer", inversedBy="employees")
+     */
+    private $carDealer;
+
+    /**
+     * User constructor.
+     */
+    public function __construct()
+    {
+        $this->setRoles(['ROLE_USER']);
+        $this->vehicles = new ArrayCollection();
+        $this->setCreatedAt(new DateTime());
+        $this->rentals = new ArrayCollection();
+    }
+
+
 
     public function getId(): ?int
     {
@@ -175,12 +207,12 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getBirthDate(): ?\DateTimeInterface
+    public function getBirthDate(): ?DateTimeInterface
     {
         return $this->birthDate;
     }
 
-    public function setBirthDate(\DateTimeInterface $birthDate): self
+    public function setBirthDate(DateTimeInterface $birthDate): self
     {
         $this->birthDate = $birthDate;
 
@@ -243,6 +275,61 @@ class User implements UserInterface
     public function setDriverLicense(string $driverLicense): self
     {
         $this->driverLicense = $driverLicense;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Rental[]
+     */
+    public function getRentals(): Collection
+    {
+        return $this->rentals;
+    }
+
+    public function addRental(Rental $rental): self
+    {
+        if (!$this->rentals->contains($rental)) {
+            $this->rentals[] = $rental;
+            $rental->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRental(Rental $rental): self
+    {
+        if ($this->rentals->contains($rental)) {
+            $this->rentals->removeElement($rental);
+            // set the owning side to null (unless already changed)
+            if ($rental->getClient() === $this) {
+                $rental->setClient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCarDealer(): ?CarDealer
+    {
+        return $this->carDealer;
+    }
+
+    public function setCarDealer(?CarDealer $carDealer): self
+    {
+        $this->carDealer = $carDealer;
 
         return $this;
     }
