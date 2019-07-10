@@ -5,25 +5,32 @@ namespace App\DataFixtures;
 
 
 use App\Entity\User;
+use App\Repository\CarDealerRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements DependentFixtureInterface
 {
     /**
      * @var UserPasswordEncoderInterface
      */
     private $userPasswordEncoder;
+    /**
+     * @var CarDealerRepository
+     */
+    private $carDealerRepository;
 
 
     /**
      * UserFixtures constructor.
      */
-    public function __construct(UserPasswordEncoderInterface $userPasswordEncoder)
+    public function __construct(UserPasswordEncoderInterface $userPasswordEncoder, CarDealerRepository $carDealerRepository)
     {
         $this->userPasswordEncoder = $userPasswordEncoder;
+        $this->carDealerRepository = $carDealerRepository;
     }
 
     public function load(ObjectManager $manager)
@@ -50,27 +57,31 @@ class UserFixtures extends Fixture
 
         $manager->persist($admin);
 
+
         //Employee
-        $owner = new User();
-        $owner->setEmail('employee@mail.com');
-        $owner->setRoles(['ROLE_EMPLOYEE']);
-        $owner->setFirstname('Employee');
-        $owner->setLastname('Employee');
-        $owner->setAddress($faker->address);
-        $owner->setCity($faker->city);
-        $owner->setZipCode($faker->postcode);
-        $owner->setBirthDate($faker->dateTime);
-        $owner->setDriverLicense(strtoupper(substr($faker->md5, 0, 25)));
-        $owner->setPhoneNumber($faker->phoneNumber);
+        $carDealers = $this->carDealerRepository->findAll();
 
-        $password = $this->userPasswordEncoder->encodePassword($owner, 'password');
-        $owner->setPassword($password);
-
-        $manager->persist($owner);
+        for ($i = 1; $i < 6; $i++) {
+            $employee = new User();
+            $employee->setEmail('employee' . $i . '@mail.com');
+            $employee->setRoles(['ROLE_EMPLOYEE']);
+            $employee->setFirstname('Employee n°' . $i);
+            $employee->setLastname('Employee');
+            $employee->setAddress($faker->address);
+            $employee->setCity($faker->city);
+            $employee->setZipCode($faker->postcode);
+            $employee->setBirthDate($faker->dateTime);
+            $employee->setDriverLicense(strtoupper(substr($faker->md5, 0, 25)));
+            $employee->setPhoneNumber($faker->phoneNumber);
+            $employee->setCarDealer($faker->randomElement($carDealers));
+            $password = $this->userPasswordEncoder->encodePassword($employee, 'password');
+            $employee->setPassword($password);
+            $manager->persist($employee);
+        }
 
 
         // Client
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 30; $i++) {
             $user = new User();
             $user->setEmail($faker->email);
             $user->setFirstname($faker->firstName);
@@ -91,4 +102,16 @@ class UserFixtures extends Fixture
         $manager->flush();
     }
 
+    /**
+     * This method must return an array of fixtures classes
+     * on which the implementing class depends on
+     *
+     * @return array
+     */
+    public function getDependencies()
+    {
+        return [
+            CarDealerFixtures::class
+        ];
+    }
 }
