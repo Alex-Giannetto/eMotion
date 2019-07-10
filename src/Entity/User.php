@@ -93,6 +93,11 @@ class User implements UserInterface
     private $rentals;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\CarDealer", inversedBy="employees")
+     */
+    private $carDealer;
+
+    /**
      * User constructor.
      */
     public function __construct()
@@ -102,6 +107,7 @@ class User implements UserInterface
         $this->setCreatedAt(new DateTime());
         $this->rentals = new ArrayCollection();
     }
+
 
 
     public function getId(): ?int
@@ -348,6 +354,18 @@ class User implements UserInterface
                 $rental->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCarDealer(): ?CarDealer
+    {
+        return $this->carDealer;
+    }
+
+    public function setCarDealer(?CarDealer $carDealer): self
+    {
+        $this->carDealer = $carDealer;
 
         return $this;
     }

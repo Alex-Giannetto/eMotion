@@ -50,12 +50,12 @@ class UserFixtures extends Fixture
 
         $manager->persist($admin);
 
-        //Owner
+        //Employee
         $owner = new User();
-        $owner->setEmail('owner@mail.com');
-        $owner->setRoles(['ROLE_OWNER']);
-        $owner->setFirstname('Owner');
-        $owner->setLastname('Owner');
+        $owner->setEmail('employee@mail.com');
+        $owner->setRoles(['ROLE_EMPLOYEE']);
+        $owner->setFirstname('Employee');
+        $owner->setLastname('Employee');
         $owner->setAddress($faker->address);
         $owner->setCity($faker->city);
         $owner->setZipCode($faker->postcode);
