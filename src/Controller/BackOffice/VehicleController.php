@@ -49,5 +49,15 @@ class VehicleController extends AbstractController
      */
     public function addVehicle(){
 
+        /**
+         * Formulaire d'ajout d'un vehicle.
+         * Si Employee => formulaire sans les CarDealer
+         * Si Admin => Formulaire avec CarDealer
+         */
+
+
+        return $this->render('vehicle/index.html.twig', [
+            'controller_name' => 'VehicleController',
+        ]);
     }
 }
