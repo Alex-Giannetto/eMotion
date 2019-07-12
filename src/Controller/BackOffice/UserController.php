@@ -1,21 +1,20 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\BackOffice;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/admin/user")
+ * @Route("/bo/user")
  * @IsGranted("ROLE_ADMIN")
  */
 class UserController extends AbstractController
 {
 
     /**
-     * @Route("/", name="admin__user__list")
-     * @IsGranted("ROLE_ADMIN")
+     * @Route("/", name="bo__user__list")
      */
     public function listUser()
     {
@@ -30,8 +29,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/delete/{id}", name="admin__user__delete")
-     * @IsGranted("ROLE_ADMIN")
+     * @Route("/delete/{id}", name="bo__user__delete")
      */
     public function deleteUser()
     {
@@ -46,7 +44,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/edit/{}", name="admin__user__edit")
+     * @Route("/edit/{id}", name="bo__user__edit")
      */
     public function editUser()
     {
