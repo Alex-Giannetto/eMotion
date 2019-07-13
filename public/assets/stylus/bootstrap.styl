@@ -1,0 +1,30 @@
+$color-orange=#ff6000
+$color-lightgrey=#F0F0F0
+$color-grey=#98989a
+$padding-inside=10px
+$border-radius=10px
+
+*
+  margin 0
+  padding 0
+  box-sizing border-box
+  font-family Helvetica, Arial,  sans-serif
+
+
+@import "components/navbar.styl"
+
+
+
+.container
+  width 70%
+  max-width 100vw
+  margin-left auto
+  margin-right auto
+
+  @media screen and (max-width: 700px)
+    width 100%
+    padding 0 20px
+
+  @media screen and (max-height: 700px)
+    width 100%
+    padding 0 20px
