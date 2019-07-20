@@ -1,9 +1,27 @@
-<div class="navbar container">
+<nav class="navbar navbar-expand-lg navbar-light">
+    <a class="navbar-brand" href="{{ path('home') }}">
+        <img src="{{ asset('assets/img/eMotion.svg') }}"
+             width="120px" height="auto"
+             class="d-inline-block align-top"
+             alt="logo eMotion">
+    </a>
 
-    <img class="navbar__logo" src="{{ asset('assets/img/eMotion.svg') }}" alt="logo eMotion">
+    <button class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-    <ul class="navbar__menu">
-        <li>Services</li>
-        <li>Contact </li>
-    </ul>
-</div>
+
+    <div class="collapse navbar-collapse"
+         id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link" href="#!">Services</a>
+            <a class="nav-item nav-link" href="#!">Contact</a>
+        </div>
+    </div>
+</nav>
