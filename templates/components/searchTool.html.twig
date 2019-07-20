@@ -1,0 +1,61 @@
+<div class="searchToolComponent">
+    <div class="container p-5">
+        <h1 class="text-center text-white">Louer votre véhicule éléctrique</h1>
+        <div class="jumbotron mt-5 p-md-2 p-lg-5 bg-white">
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="mb-0" for="location">Lieux</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text border-0 bg-ligthgrey"><ion-icon name="pin"></ion-icon></span>
+                        </div>
+                        <select class="custom-select bg-ligthgrey border-0 pl-0" id="location" name="location">
+                            <option SELECTED value="1">Paris : La Défense</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="mb-0" for="start">Début</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text border-0 bg-ligthgrey"><ion-icon
+                                        name="calendar"></ion-icon></span>
+                        </div>
+                        <input type="date" id="start" name="date_start" class="form-control bg-ligthgrey border-0 pl-0"
+                               value="{{ "now"|date("d/m/Y") }}">
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="mb-0" for="end">Fin</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text border-0 bg-ligthgrey"><ion-icon
+                                        name="calendar"></ion-icon></span>
+                        </div>
+                        <input type="date" id="end" name="date_end" class="form-control bg-ligthgrey border-0 pl-0"
+                               value="{{ "now"|date_modify("+7 day")|date("d/m/Y") }}">
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="mb-0" for="type">Type</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text border-0 bg-ligthgrey"><ion-icon name="car"></ion-icon></span>
+                        </div>
+                        <select class="custom-select bg-ligthgrey border-0 pl-0" id="type" name="type">
+                            <option SELECTED value="1">Voiture</option>
+                            <option value="1">Scooter</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-2 searchTool__searchBtn">
+                    <button type="button" class="btn btn-primary">Valider</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
