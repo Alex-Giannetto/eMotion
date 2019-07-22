@@ -16,6 +16,7 @@ class UserController extends AbstractController
 
     /**
      * @Route("/", name="bo__user__list")
+     * List of users
      */
     public function listUser(UserRepository $userRepository)
     {

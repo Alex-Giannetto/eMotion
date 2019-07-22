@@ -5,22 +5,22 @@
 {% block body %}
 
     <div class="container">
-        <table class="table">
+        <table class="table" id="listUser">
             <thead>
             <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Email</th>
+                <th class="text-center">ID</th>
+                <th class="text-center">Nom</th>
+                <th class="text-center">Prénom</th>
+                <th class="text-center">Email</th>
             </tr>
             </thead>
             <tbody>
             {% for user in users %}
-                <tr>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.lastname }}</td>
-                    <td>{{ user.firstname }}</td>
-                    <td>{{ user.email }}</td>
+                <tr data-idUser="{{ user.id }}">
+                    <td class="text-center">{{ user.id }}</td>
+                    <td class="text-center">{{ user.lastname }}</td>
+                    <td class="text-center">{{ user.firstname }}</td>
+                    <td class="text-center">{{ user.email }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -29,4 +29,18 @@
 
 
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $("#listUser tbody tr").on("click", function () {
+            const $this = $(this);
+            const idUser = $this[0].getAttribute('data-idUser');
+
+            $(location).attr('href', '{{ path('home') }}')
+
+        });
+    </script>
 {% endblock %}
