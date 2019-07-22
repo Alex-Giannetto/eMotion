@@ -22,12 +22,12 @@ class RegisterType extends AbstractType
             ->add('password', RepeatedType::class, array(
                 'type' => PasswordType::class,
                 'first_options' => array('label' => 'Mot de passe'),
-                'second_options' => array('label' => 'Répétez le mot de passe'),
+                'second_options' => array('label' => 'Répéter le mot de passe'),
             ))
             ->add('firstname', TextType::class, array('label' => 'Prénom'))
             ->add('lastname', TextType::class, array('label' => 'Nom'))
             ->add('birthDate', BirthdayType::class, array('label' => 'Date de naissance'))
-            ->add('phoneNumber', TextType::class, array('label' => 'Numéro de telephone'))
+            ->add('phoneNumber', TextType::class, array('label' => 'Numéro de téléphone'))
             ->add('address', TextType::class, array('label' => 'Adresse'))
             ->add('city', TextType::class, array('label' => 'Ville'))
             ->add('zipCode', TextType::class, array('label' => 'Code Postal'))
