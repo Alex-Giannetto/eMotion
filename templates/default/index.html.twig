@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} : Votre site de location de véhicule éléctrique !
+{% endblock %}
+
+{% block body %}
+    <div class="indexPage">
+        {% include 'components/searchTool.html.twig' %}
+    </div>
+{% endblock %}
