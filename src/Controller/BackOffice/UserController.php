@@ -2,6 +2,7 @@
 
 namespace App\Controller\BackOffice;
 
+use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,15 +17,10 @@ class UserController extends AbstractController
     /**
      * @Route("/", name="bo__user__list")
      */
-    public function listUser()
+    public function listUser(UserRepository $userRepository)
     {
-
-        /**
-         * Liste de tout les utilisateurs
-         */
-
-        return $this->render('user/index.html.twig', [
-            'controller_name' => 'UserController',
+        return $this->render('bo/user/list.html.twig', [
+            'users' => $userRepository->findAll(),
         ]);
     }
 
