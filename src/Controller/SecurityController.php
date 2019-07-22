@@ -34,7 +34,7 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('login');
         }
 
-        return $this->render('security/index.html.twig', [
+        return $this->render('security/login.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -48,7 +48,7 @@ class SecurityController extends AbstractController
         $user->setEmail($authenticationUtils->getLastUsername());
         $form = $this->createForm(LoginType::class, $user);
 
-        return $this->render('security/index.html.twig', [
+        return $this->render('security/login.html.twig', [
 //            'error' => $authenticationUtils->getLastAuthenticationError(),
             'form' => $form->createView()
         ]);
