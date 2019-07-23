@@ -4,43 +4,39 @@
 
 {% block body %}
 
-    <div class="container">
-        <table class="table" id="listUser">
-            <thead>
-            <tr>
-                <th class="text-center">ID</th>
-                <th class="text-center">Nom</th>
-                <th class="text-center">Prénom</th>
-                <th class="text-center">Email</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for user in users %}
-                <tr data-idUser="{{ user.id }}">
-                    <td class="text-center">{{ user.id }}</td>
-                    <td class="text-center">{{ user.lastname }}</td>
-                    <td class="text-center">{{ user.firstname }}</td>
-                    <td class="text-center">{{ user.email }}</td>
+    <div class="listPage">
+        <div class="container">
+
+            <h1 class="pt-2 pb-4">Liste des utilisateurs</h1>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th class="text-center">ID</th>
+                    <th class="text-center">Nom</th>
+                    <th class="text-center">Prénom</th>
+                    <th class="text-center">Email</th>
+                    <th></th>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr class="{{ user.hasRole("ROLE_ADMIN") ? 'table-success' : user.hasRole('ROLE_EMPLOYEE')? 'table-warning' : '' }}">
+                        <td class="text-center">{{ user.id }}</td>
+                        <td class="text-center">{{ user.lastname }}</td>
+                        <td class="text-center">{{ user.firstname }}</td>
+                        <td class="text-center">{{ user.email }}</td>
+                        <td>
+                            <a href="{{ path('bo__user__info', {id: user.id}) }}">
+                                <ion-icon name="arrow-forward"></ion-icon>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
 
-
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-
-    <script>
-        $("#listUser tbody tr").on("click", function () {
-            const $this = $(this);
-            const idUser = $this[0].getAttribute('data-idUser');
-
-            $(location).attr('href', '{{ path('home') }}')
-
-        });
-    </script>
 {% endblock %}
