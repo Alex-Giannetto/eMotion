@@ -1,0 +1,34 @@
+<div class="container">
+    <h1>Locations</h1>
+    <div class="jumbotron pt-2 pb-2">
+        {% if rentals|length > 0 %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID location</th>
+                    <th>Véhicule</th>
+                    <th>Date début</th>
+                    <th>Date retour estimé</th>
+                    <th>Date retour réel</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for rental in rentals %}
+                    <tr>
+                        <td>{{ rental.id }}</td>
+                        <td>{{ rental.vehicle.brand ~ ' ' ~ rental.vehicle.model }}</td>
+                        <td>{{ rental.startRentalDate|date('d/m/Y') }}</td>
+                        <td>{{ rental.estimatedReturnDate|date('d/m/Y') }}</td>
+                        <td>{{ rental.realReturnDate|date('d/m/Y') }}</td>
+                        <td>
+                            <ion-icon name="document"></ion-icon>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-center">Cet utilisateur n'a pas encore loué sa première voiture</p>
+        {% endif %}
+    </div>
+</div>
