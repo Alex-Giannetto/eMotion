@@ -41,7 +41,7 @@ class DefaultController extends AbstractController
             $lastNameContact = $request->request->get('lastNameContact');
             $emailContact = $request->request->get('emailContact');
             $messageContact = $request->request->get('message');
-            $message = (new \Swift_Message('Contact : ' . $object))
+            $messageAdmin = (new \Swift_Message('Contact : ' . $object))
                 ->setFrom('zozotueur@gmail.com')
                 ->setTo('zozotueur@gmail.com')
                 ->setBody(
@@ -58,7 +58,25 @@ class DefaultController extends AbstractController
                     'text/html'
                 );
 
-            $mailer->send($message);
+            $messageClient = (new \Swift_Message('Contact : ' . $object))
+                ->setFrom('zozotueur@gmail.com')
+                ->setTo($emailContact)
+                ->setBody(
+                    $this->renderView(
+                    // templates/emails/registration.html.twig
+                        'emails/mailContact.html.twig',
+                        [
+                            'firstNameContact' => $firstNameContact,
+                            'lastNameContact' => $lastNameContact,
+                            'emailContact' => $emailContact,
+                            'messageContact' => $messageContact
+                        ]
+                    ),
+                    'text/html'
+                );
+
+            $mailer->send($messageAdmin);
+            $mailer->send($messageClient);
             return $this->render('default/validationMail.html.twig');
         } else {
             return $this->render('default/contact.html.twig');
