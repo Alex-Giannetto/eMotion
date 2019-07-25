@@ -13,7 +13,9 @@
                                 </span>
                             </div>
                             <select class="custom-select bg-ligthgrey border-0 pl-0" id="location" name="location">
-                                <option SELECTED value="1">Paris : La Défense</option>
+                                {% for dealer in carDealer %}
+                                    <option value="{{ dealer.id }}">{{ dealer.name }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>
@@ -51,8 +53,9 @@
                                             name="car"></ion-icon></span>
                             </div>
                             <select class="custom-select bg-ligthgrey border-0 pl-0" id="type" name="type">
-                                <option SELECTED value="1">Voiture</option>
-                                <option value="2">Scooter</option>
+                                {% for type in carType %}
+                                    <option value="{{ type.id }}">{{ type.label }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>
