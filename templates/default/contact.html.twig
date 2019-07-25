@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} : Contact
+{% endblock %}
+
+{% block body %}
+    <form method="post" action="#" class="mr-5 ml-5">
+        <div class="form-row">
+            <div class="col-md-6 form-group">
+                <label for="object">Objet :</label>
+                <input class="form-control" type="text" id="object" name="object">
+            </div>
+            <div class="col-md-6 form-group">
+                <label for="firstNameContact">Prénom :</label>
+                <input class="form-control" type="text" id="firstNameContact" name="firstNameContact">
+            </div>
+            <div class="col-md-6 form-group">
+                <label for="lastNameContact">Nom :</label>
+                <input class="form-control" type="text" id="lastNameContact" name="lastNameContact">
+            </div>
+            <div class="col-md-6 form-group">
+                <label for="emailContact">Email :</label>
+                <input class="form-control" type="email" id="emailContact" name="emailContact"
+                       placeholder="example@exemple.com">
+            </div>
+            <div class="col-md-12 form-group">
+                <label for="message">Message :</label>
+                <textarea class="form-control" id="message" name="message" cols="100" rows="10"></textarea>
+            </div>
+            <div class="form-group">
+                <button class="form-control btn btn-primary" type="submit">Envoyer</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

@@ -22,10 +22,10 @@
              id="navbarNavAltMarkup">
             <ul class="navbar-nav">
                 <li>
-                    <a class="nav-item nav-link" href="#!">Services</a>
+                    <a class="nav-item nav-link" href='{{ path('services') }}'>Services</a>
                 </li>
                 <li>
-                    <a class="nav-item nav-link" href="#!">Contact</a>
+                    <a class="nav-item nav-link" href='{{ path('contact') }}'>Contact</a>
                 </li>
 
                 {% if is_granted('ROLE_ADMIN') %}
