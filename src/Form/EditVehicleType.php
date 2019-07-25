@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\DateTimeType;
 use Faker\Provider\cs_CZ\DateTime;
 use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -29,10 +30,11 @@ class EditVehicleType extends AbstractType
             ->add('matriculation',TextType::class, array('label' => 'Plaque d\'immatriculation'))
             ->add('kilometers',NumberType::class, array('label' => 'Kilomètres'))
             ->add('purchasingDate',DateType::class, array('label' => 'Date d\'achat'))
-            ->add('state',Boolean::class, array('label' => 'Etat'))
+            ->add('state',CheckboxType::class, array('label' => 'Etat'))
             ->add('minDailyPrice', NumberType::class, array('label' => 'Prix minimum par jour'))
             ->add('purchasingPrice', NumberType::class, array('label' => 'Prix d\'achat'))
             ->add('dailyPrice', NumberType::class, array('label' => 'Prix par jour'))
+            ->add('submit', SubmitType::class, array('label' => 'Valider'));
         ;
     }
 

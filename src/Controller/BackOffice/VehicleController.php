@@ -5,12 +5,12 @@ namespace App\Controller\BackOffice;
 use App\Entity\Vehicle;
 use App\Repository\VehicleRepository;
 use App\Form\EditVehicleType;
+use App\Form\AddVehicleType;
 use Doctrine\ORM\EntityManagerInterface;
-use http\Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\BrowserKit\Request;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -61,6 +61,7 @@ class VehicleController extends AbstractController
 
     /**
      * @Route("/edit/{id}", name="bo__vehicle__edit")
+     * @ParamConverter("vehicle", options={"id" = "id"})
      */
     public function editVehicle(Vehicle $vehicle , Request $request){
 
@@ -90,8 +91,10 @@ class VehicleController extends AbstractController
 
     /**
      * @Route("/add", name="bo__vehicle__add")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function addVehicle(){
+    public function addVehicle(Request $request){
 
         /**
          * Formulaire d'ajout d'un vehicle.
@@ -99,17 +102,22 @@ class VehicleController extends AbstractController
          * Si Admin => Formulaire avec CarDealer
          */
 
-        $entityManager = $this->getDoctrine()->getManager();
+        $vehicle = new Vehicle();
+        $form = $this->createForm(AddVehicleType::class, $vehicle);
+        $form->handleRequest($request);
 
-        $vehicule = new Vehicle();
+        /* A ajouter ici condition avec carDealer et sans carDealer*/
+            if($form->isSubmitted() && $form->isValid()) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($vehicle);
+                $entityManager->flush();
+                return $this->redirectToRoute('bo__vehicle__info', [
+                    'id' => $vehicle->getId()
+                ]);
+            }
 
-        $entityManager->persist($vehicule);
-
-        $entityManager->flush();
-
-
-        return $this->render('vehicle/list.html.twig', [
-            'controller_name' => 'VehicleController',
+        return $this->render('vehicle/add.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 

@@ -135,7 +135,7 @@ class Vehicle
     }
 
 
-    public function getBrand(): string
+    public function getBrand(): ?string
     {
         return $this->brand;
     }
@@ -148,7 +148,7 @@ class Vehicle
     }
 
 
-    public function getModel(): string
+    public function getModel(): ?string
     {
         return $this->model;
     }
@@ -161,7 +161,7 @@ class Vehicle
     }
 
 
-    public function getSerialNumber(): string
+    public function getSerialNumber(): ?string
     {
         return $this->serialNumber;
     }
@@ -174,7 +174,7 @@ class Vehicle
     }
 
 
-    public function getColor(): string
+    public function getColor(): ?string
     {
         return $this->color;
     }
@@ -187,7 +187,7 @@ class Vehicle
     }
 
 
-    public function getAutonomy(): float
+    public function getAutonomy(): ?float
     {
         return $this->autonomy;
     }
@@ -200,7 +200,7 @@ class Vehicle
     }
 
 
-    public function getDailyDistance(): float
+    public function getDailyDistance(): ?float
     {
         return $this->dailyDistance;
     }
@@ -213,7 +213,7 @@ class Vehicle
     }
 
 
-    public function getMatriculation(): string
+    public function getMatriculation(): ?string
     {
         return $this->matriculation;
     }
@@ -226,7 +226,7 @@ class Vehicle
     }
 
 
-    public function getKilometers(): float
+    public function getKilometers(): ?float
     {
         return $this->kilometers;
     }
@@ -239,7 +239,7 @@ class Vehicle
     }
 
 
-    public function getPurchasingDate(): DateTime
+    public function getPurchasingDate(): ?DateTime
     {
         return $this->purchasingDate;
     }
@@ -252,7 +252,7 @@ class Vehicle
     }
 
 
-    public function getState(): bool
+    public function getState(): ?bool
     {
         return $this->state;
     }

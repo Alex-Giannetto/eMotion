@@ -25,22 +25,14 @@
                     </div>
 
                     <div class="userEditSection">
-                        <a href="{{ path('bo__user__edit', {id: vehicle.id}) }}">
+                        <a href="{{ path('bo__vehicle__edit', {id: vehicle.id}) }}">
                             <button class="btn btn-dark btn-block">Modifier</button>
                         </a>
-                        <a href="{{ path("bo__user__delete", {id: vehicle.id}) }}">
+                        <a href="{{ path("bo__vehicle__delete", {id: vehicle.id}) }}">
                             <button class="btn btn-danger btn-block" id="deleteBtn">Supprimer</button>
                         </a>
                     </div>
                 </div>
-
-                <div class="col-md-4">
-                    <div class="jumbotron"></div>
-                </div>
-            </div>
-
-            <div class="row">
-                {% include 'components/rentalsTable.html.twig' with {rentals : vehicle.rentals} only %}
             </div>
         </div>
     </div>
