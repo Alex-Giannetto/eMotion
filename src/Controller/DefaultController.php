@@ -42,7 +42,6 @@ class DefaultController extends AbstractController
             $emailContact = $request->request->get('emailContact');
             $messageContact = $request->request->get('message');
             $adrMail = 'zozotueur@gmail.com';
-            $information = array();
             $information = [$firstNameContact,$lastNameContact,$emailContact,$messageContact];
             $contentMail = $this->renderView('emails/registration.html.twig',[ 'information' => $information]);
             $contentMailContact = $this->renderView('emails/mailContact.html.twig',[ 'information' => $information]);
@@ -54,23 +53,4 @@ class DefaultController extends AbstractController
             return $this->render('default/contact.html.twig');
         }
     }
-/*
-    public function sendMail(\Swift_Mailer $mailer, $subject, $from, $to, $view ,array $informationBody)
-    {
-        $message = (new \Swift_Message( $subject))
-            ->setFrom($from)
-            ->setTo($to)
-            ->setBody(
-                $this->renderView(
-                // templates/emails/registration.html.twig
-                    $view,
-                    [
-                        'information' => $informationBody
-                    ]
-                ),
-                'text/html'
-            );
-
-        $mailer->send($message);
-    }*/
 }
