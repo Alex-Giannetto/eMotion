@@ -1,10 +1,12 @@
 {# templates/emails/registration.html.twig #}
 <h3>Un client souhaite vous contactez</h3>
 
-Client :
+Information Client :
 <br>
-Prénom : {{ firstNameContact }}<br>
-Nom : {{ lastNameContact }}<br>
-Mail : {{ emailContact }}<br>
-Message : {{ messageContact }}
-
+Prénom : {{ information.0 }}
+<br>
+Nom : {{ information.1 }}
+<br>
+Mail : {{ information.2 }}
+<br>
+Message : {{ information.3 }}

@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 
+use App\Service\MailService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-
 use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends AbstractController
@@ -41,45 +41,36 @@ class DefaultController extends AbstractController
             $lastNameContact = $request->request->get('lastNameContact');
             $emailContact = $request->request->get('emailContact');
             $messageContact = $request->request->get('message');
-            $messageAdmin = (new \Swift_Message('Contact : ' . $object))
-                ->setFrom('zozotueur@gmail.com')
-                ->setTo('zozotueur@gmail.com')
-                ->setBody(
-                    $this->renderView(
-                    // templates/emails/registration.html.twig
-                        'emails/registration.html.twig',
-                        [
-                            'firstNameContact' => $firstNameContact,
-                            'lastNameContact' => $lastNameContact,
-                            'emailContact' => $emailContact,
-                            'messageContact' => $messageContact
-                        ]
-                    ),
-                    'text/html'
-                );
-
-            $messageClient = (new \Swift_Message('Contact : ' . $object))
-                ->setFrom('zozotueur@gmail.com')
-                ->setTo($emailContact)
-                ->setBody(
-                    $this->renderView(
-                    // templates/emails/registration.html.twig
-                        'emails/mailContact.html.twig',
-                        [
-                            'firstNameContact' => $firstNameContact,
-                            'lastNameContact' => $lastNameContact,
-                            'emailContact' => $emailContact,
-                            'messageContact' => $messageContact
-                        ]
-                    ),
-                    'text/html'
-                );
-
-            $mailer->send($messageAdmin);
-            $mailer->send($messageClient);
+            $adrMail = 'zozotueur@gmail.com';
+            $information = array();
+            $information = [$firstNameContact,$lastNameContact,$emailContact,$messageContact];
+            $contentMail = $this->renderView('emails/registration.html.twig',[ 'information' => $information]);
+            $contentMailContact = $this->renderView('emails/mailContact.html.twig',[ 'information' => $information]);
+            $emailService = new MailService();
+            $emailService->sendMail($mailer, 'Contact : '.$object,$adrMail,$adrMail,$contentMail);
+            $emailService->sendMail($mailer, 'Information demande : '.$object,$adrMail,$emailContact,$contentMailContact);
             return $this->render('default/validationMail.html.twig');
         } else {
             return $this->render('default/contact.html.twig');
         }
     }
+/*
+    public function sendMail(\Swift_Mailer $mailer, $subject, $from, $to, $view ,array $informationBody)
+    {
+        $message = (new \Swift_Message( $subject))
+            ->setFrom($from)
+            ->setTo($to)
+            ->setBody(
+                $this->renderView(
+                // templates/emails/registration.html.twig
+                    $view,
+                    [
+                        'information' => $informationBody
+                    ]
+                ),
+                'text/html'
+            );
+
+        $mailer->send($message);
+    }*/
 }
