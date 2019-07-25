@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="container ">
+
+        <div class="row">
+
+            <div class="col-md-8">
+                <div class="container">
+                    <h1>Nos véhicules disponibles</h1>
+
+                    {% for vehicle in vehicles %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include 'components/rentalCarElement.html.twig' with {vehicle : vehicle} only %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="col-md-4 recap">
+                <h1>Ma recherche</h1>
+                <form method="get">
+                    <div class="jumbotron p-md-4 mb-3">
+                        <label class="mb-0" for="location">Lieux</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text border-0 bg-white">
+                                    <ion-icon name="pin"></ion-icon>
+                                </span>
+                            </div>
+                            <select class="custom-select border-0 pl-0 bg-white" id="location" name="location">
+                                {% for dealer in carDealer %}
+                                    <option {% if dealer.id == idLocation %} SELECTED {% endif %}
+                                            value="{{ dealer.id }}">{{ dealer.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <label class="mb-0" for="start">Début</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                            <span class="input-group-text border-0 bg-white"><ion-icon
+                                        name="calendar"></ion-icon></span>
+                            </div>
+                            <input type="date" id="start" name="date_start"
+                                   class="form-control bg-white border-0 pl-0"
+                                   value="{{ dateStart }}">
+                        </div>
+
+
+                        <label class="mb-0" for="end">Fin</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                            <span class="input-group-text border-0 bg-white"><ion-icon
+                                        name="calendar"></ion-icon></span>
+                            </div>
+                            <input type="date" id="end" name="date_end" class="form-control bg-white border-0 pl-0"
+                                   value="{{ dateEnd }}">
+                        </div>
+
+                        <label class="mb-0" for="type">Type</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text border-0 bg-white"><ion-icon
+                                            name="car"></ion-icon></span>
+                            </div>
+                            <select class="custom-select bg-white border-0 pl-0" id="type" name="type">
+                                {% for type in carType %}
+                                    <option {% if type.id == idTypeVehicle %} SELECTED {% endif %}
+                                            value="{{ type.id }}">{{ type.label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <input type="submit" class="btn btn-outline-primary btn-block" value="Rechercher">
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
