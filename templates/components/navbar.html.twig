@@ -1,4 +1,4 @@
-<div class="container mt-4">
+<div class="container mt-4 mb-4">
     <nav class="navbarComponnent navbar navbar-expand-lg navbar-light">
         <a class="navbar-brand" href="{{ path('home') }}">
             <img src="{{ asset('assets/img/logo/eMotion.svg') }}"
@@ -20,10 +20,28 @@
 
         <div class="collapse navbar-collapse"
              id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-                <a class="nav-item nav-link" href="{{ path('services') }}">Services</a>
-                <a class="nav-item nav-link" href="{{ path('contact') }}">Contact</a>
-            </div>
+            <ul class="navbar-nav">
+                <li>
+                    <a class="nav-item nav-link" href='{{ path('services') }}'>Services</a>
+                </li>
+                <li>
+                    <a class="nav-item nav-link" href='{{ path('contact') }}'>Contact</a>
+                </li>
+
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Back Office
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{{ path('bo__user__list') }}">Users</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
 
     </nav>

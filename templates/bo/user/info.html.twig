@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}eMotion - Liste des utilisateurs{% endblock %}
+
+{% block body %}
+    <div class="infoPage">
+
+        <div class="container">
+            <div class="row">
+                <h1 class="col-md-12">Information utilisateur</h1>
+            </div>
+            <div class="row mb-5">
+                <div class="col-md-8">
+                    <div class="jumbotron">
+                        <p><b>Prénom :</b> {{ user.firstname }}</p>
+                        <p><b>Nom :</b> {{ user.lastname }}</p>
+                        <p><b>Email :</b> {{ user.email }}</p>
+                        <p><b>Date de naissance:</b> {{ user.birthdate|date("d/m/Y") }}</p>
+                        <p><b>Adresse :</b> {{ user.address }}</p>
+                        <p><b>Ville :</b> {{ user.city ~ ', ' ~ user.zipcode }}</p>
+                        <p><b>Numéro de permis de conduire :</b> {{ user.driverLicense }}</p>
+                        <p><b>Date d'inscription :</b> {{ user.createdAt|date('d/m/Y') }}</p>
+                    </div>
+
+                    <div class="userEditSection">
+                        <a href="{{ path('bo__user__edit', {id: user.id}) }}">
+                            <button class="btn btn-dark btn-block">Modifier</button>
+                        </a>
+                        <a href="{{ path("bo__user__delete", {id: user.id}) }}">
+                            <button class="btn btn-danger btn-block" id="deleteBtn">Supprimer</button>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="jumbotron"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                {% include 'components/rentalsTable.html.twig' with {rentals : user.rentals} only %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
