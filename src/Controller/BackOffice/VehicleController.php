@@ -3,9 +3,9 @@
 namespace App\Controller\BackOffice;
 
 use App\Entity\Vehicle;
-use App\Repository\VehicleRepository;
-use App\Form\EditVehicleType;
 use App\Form\AddVehicleType;
+use App\Form\EditVehicleType;
+use App\Repository\VehicleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -73,9 +73,9 @@ class VehicleController extends AbstractController
         $form = $this->createForm(EditVehicleType::class, $vehicle);
         $form->handleRequest($request);
 
-        if($this->isGranted("ROLE_ADMIN")){
+        if ($this->isGranted("ROLE_ADMIN")) { // todo : voter
             if($form->isSubmitted() && $form->isValid()) {
-                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager = $this->getDoctrine()->getManager();//todo : injecter dans la fonction
                 $entityManager->persist($vehicle);
                 $entityManager->flush();
                 return $this->redirectToRoute('bo__vehicle__info', [
