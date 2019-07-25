@@ -13,40 +13,7 @@
                     {% for vehicle in vehicles %}
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="car_view jumbotron p-md-3">
-                                    <div class="car_photo">
-                                        <img src="{{ asset('assets/img/tesla.png') }}"
-                                             alt="image de la voiture">
-                                    </div>
-
-                                    <div class="car_data">
-                                        <div>
-                                            <p class="car_view__brand">{{ vehicle.brand }}</p>
-                                            <p class="car_view__model">{{ vehicle.model }}</p>
-                                        </div>
-                                        <table class="car_details">
-                                            <tr>
-                                                <td>couleur</td>
-                                                <td><span class="pill"
-                                                          style="background-color: {{ vehicle.color }};"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>autonomie</td>
-                                                <td>{{ vehicle.autonomy }} km</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="car_price">
-
-                                        <div class="price">
-                                            <span class="price__old">54,99€</span>
-                                            <span class="price__current">{{ vehicle.dailyPrice }}€*</span>
-                                            {#                                                                <span class="price__byDay">/jour</span>#}
-                                        </div>
-
-                                        <button class='btn btn-primary btn-block'>Réserver</button>
-                                    </div>
-                                </div>
+                                {% include 'components/rentalCarElement.html.twig' with {vehicle : vehicle} only %}
                             </div>
                         </div>
                     {% endfor %}
@@ -55,44 +22,62 @@
 
             <div class="col-md-4 recap">
                 <h1>Ma recherche</h1>
-                <div class="jumbotron p-md-4">
-
-                    <label class="mb-0" for="location">Lieux</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
+                <form method="get">
+                    <div class="jumbotron p-md-4 mb-3">
+                        <label class="mb-0" for="location">Lieux</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                                 <span class="input-group-text border-0 bg-white">
                                     <ion-icon name="pin"></ion-icon>
                                 </span>
+                            </div>
+                            <select class="custom-select border-0 pl-0 bg-white" id="location" name="location">
+                                {% for dealer in carDealer %}
+                                    <option {% if dealer.id == idLocation %} SELECTED {% endif %}
+                                            value="{{ dealer.id }}">{{ dealer.name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
-                        <select disabled class="custom-select border-0 pl-0 bg-white" id="location" name="location">
-                            <option SELECTED value="1">Paris : La Défense</option>
-                        </select>
-                    </div>
 
-                    <label class="mb-0" for="start">Début</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
+                        <label class="mb-0" for="start">Début</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                             <span class="input-group-text border-0 bg-white"><ion-icon
                                         name="calendar"></ion-icon></span>
+                            </div>
+                            <input type="date" id="start" name="date_start"
+                                   class="form-control bg-white border-0 pl-0"
+                                   value="{{ dateStart }}">
                         </div>
-                        <input type="date" disabled id="start" name="date_start"
-                               class="form-control bg-white border-0 pl-0"
-                               value="{{ "now"|date("d/m/Y") }}">
-                    </div>
 
 
-                    <label class="mb-0" for="end">Fin</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
+                        <label class="mb-0" for="end">Fin</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                             <span class="input-group-text border-0 bg-white"><ion-icon
                                         name="calendar"></ion-icon></span>
+                            </div>
+                            <input type="date" id="end" name="date_end" class="form-control bg-white border-0 pl-0"
+                                   value="{{ dateEnd }}">
                         </div>
-                        <input type="date" disabled id="end" name="date_end" class="form-control bg-white border-0 pl-0"
-                               value="{{ "now"|date_modify("+7 day")|date("d/m/Y") }}">
+
+                        <label class="mb-0" for="type">Type</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text border-0 bg-white"><ion-icon
+                                            name="car"></ion-icon></span>
+                            </div>
+                            <select class="custom-select bg-white border-0 pl-0" id="type" name="type">
+                                {% for type in carType %}
+                                    <option {% if type.id == idTypeVehicle %} SELECTED {% endif %}
+                                            value="{{ type.id }}">{{ type.label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
 
-
-                </div>
+                    <input type="submit" class="btn btn-outline-primary btn-block" value="Rechercher">
+                </form>
             </div>
         </div>
     </div>
