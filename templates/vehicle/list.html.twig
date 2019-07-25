@@ -1,20 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello VehicleController!{% endblock %}
+{% block title %}eMotion - Liste des véhicules{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <div class="listPage">
+        <div class="container">
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/Users/alex/Dev/eMotion-project/eMotion/src/Controller/VehicleController.php'|file_link(0) }}">src/Controller/VehicleController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/Users/alex/Dev/eMotion-project/eMotion/templates/vehicle/index.html.twig'|file_link(0) }}">templates/vehicle/index.html.twig</a></code></li>
-    </ul>
-</div>
+            <h1 class="pt-2 pb-4">Liste des véhicules</h1>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th class="text-center">Marque</th>
+                    <th class="text-center">Modèle</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for vehicle in vehicles %}
+                    <tr>
+                        <td class="text-center">{{ vehicle.brand }}</td>
+                        <td class="text-center">{{ vehicle.model }}</td>
+                        <td>
+                            <a href="{{ path('bo__vehicle__info', {id: vehicle.id}) }}">
+                                <ion-icon name="arrow-forward"></ion-icon>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
 {% endblock %}

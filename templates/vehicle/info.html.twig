@@ -1,10 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+{% extends 'base.html.twig' %}
 
-</body>
-</html>
+{% block title %}eMotion - Liste des véhicules{% endblock %}
+
+{% block body %}
+    <div class="infoPage">
+        <div class="container">
+            <div class="row">
+                <h1 class="col-md-12">Information du véhicule</h1>
+            </div>
+            <div class="row mb-5">
+                <div class="col-md-8">
+                    <div class="jumbotron">
+                        <p><b>Marque :</b> {{ vehicle.brand }}</p>
+                        <p><b>Modèle :</b> {{ vehicle.model }}</p>
+                        <p><b>Numéro de série :</b> {{ vehicle.serialNumber }}</p>
+                        <p><b>Couleur :</b> {{ vehicle.color }}</p>
+                        <p><b>Autonomie :</b> {{ vehicle.autonomy }}</p>
+                        <p><b>Distance par jour :</b> {{ vehicle.dailyDistance }}</p>
+                        <p><b>Immatriculation :</b> {{ vehicle.matriculation }}</p>
+                        <p><b>Kilomètres :</b> {{ vehicle.kilometers }}</p>
+                        <p><b>Date d'achat :</b> {{ vehicle.purchasingDate|date('d/m/Y') }}</p>
+                        <p><b>Etat :</b> {{ vehicle.state }}</p>
+                        <p><b>Prix par jour :</b> {{ vehicle.dailyPrice }}</p>
+                    </div>
+
+                    <div class="userEditSection">
+                        <a href="{{ path('bo__user__edit', {id: vehicle.id}) }}">
+                            <button class="btn btn-dark btn-block">Modifier</button>
+                        </a>
+                        <a href="{{ path("bo__user__delete", {id: vehicle.id}) }}">
+                            <button class="btn btn-danger btn-block" id="deleteBtn">Supprimer</button>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="jumbotron"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                {% include 'components/rentalsTable.html.twig' with {rentals : vehicle.rentals} only %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

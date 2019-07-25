@@ -18,4 +18,27 @@ class VehicleRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Vehicle::class);
     }
+
+    public function listVehicleEmployeeConcession(){
+
+        $vehicule = $this->getEntityManager()->createQuery("SELECT * 
+        FROM vehicle v , user u 
+        WHERE v.id = u.id
+        AND v.car_dealer_id = u.car_dealer_id");
+
+        return $vehicule;
+    }
+
+    public function editVehicle(){
+
+        $vehicule = $this->getEntityManager()->createQuery("
+        UPDATE vehicule
+        SET ");
+
+        return $vehicule;
+
+    }
+
+
+
 }
