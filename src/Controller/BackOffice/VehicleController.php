@@ -30,19 +30,11 @@ class VehicleController extends AbstractController
          *  SI ROLE_EMPLOYEE => Véhicule de sa concession
          */
 
-        if($this->isGranted("ROLE_ADMIN")){
+        $vehicles = ($this->isGranted("ROLE_ADMIN")) ? $vehicleRepository->findall() : $this->getUser()->getCarDealer()->getVehicles();
 
-            return $this->render('vehicle/list.html.twig', [
-                'vehicles' => $vehicleRepository->findall(),
-            ]);
-
-        } else if($this->isGranted("ROLE_EMPLOYEE")){
-
-            return $this->render('vehicle/list.html.twig', [
-                'vehicles' => $vehicleRepository->listVehicleEmployeeConcession(),
-            ]);
-
-        }
+        return $this->render('vehicle/list.html.twig', [
+            'vehicles' => $vehicles
+        ]);
     }
 
 
@@ -63,7 +55,8 @@ class VehicleController extends AbstractController
      * @Route("/edit/{id}", name="bo__vehicle__edit")
      * @ParamConverter("vehicle", options={"id" = "id"})
      */
-    public function editVehicle(Vehicle $vehicle , Request $request){
+    public function editVehicle(Vehicle $vehicle, Request $request)
+    {
 
         /**
          * Vérifier qu'utilisateur a le droit de modifier ce vehicule
@@ -74,7 +67,7 @@ class VehicleController extends AbstractController
         $form->handleRequest($request);
 
         if ($this->isGranted("ROLE_ADMIN")) { // todo : voter
-            if($form->isSubmitted() && $form->isValid()) {
+            if ($form->isSubmitted() && $form->isValid()) {
                 $entityManager = $this->getDoctrine()->getManager();//todo : injecter dans la fonction
                 $entityManager->persist($vehicle);
                 $entityManager->flush();
@@ -94,7 +87,8 @@ class VehicleController extends AbstractController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response // todo : à supprimer
      */
-    public function addVehicle(Request $request){
+    public function addVehicle(Request $request)
+    {
 
         /**
          * Formulaire d'ajout d'un vehicle.
@@ -107,14 +101,14 @@ class VehicleController extends AbstractController
         $form->handleRequest($request);
 
         /* A ajouter ici condition avec carDealer et sans carDealer*/ // todo : il y a forcément un car dealer
-            if($form->isSubmitted() && $form->isValid()) {
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($vehicle);
-                $entityManager->flush();
-                return $this->redirectToRoute('bo__vehicle__info', [
-                    'id' => $vehicle->getId()
-                ]);
-            }
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($vehicle);
+            $entityManager->flush();
+            return $this->redirectToRoute('bo__vehicle__info', [
+                'id' => $vehicle->getId()
+            ]);
+        }
 
         return $this->render('vehicle/add.html.twig', [
             'form' => $form->createView(),
@@ -125,7 +119,8 @@ class VehicleController extends AbstractController
      * @Route("/delete/{id}" , name="bo__vehicle__delete")
      * @ParamConverter("vehicle", options={"id" = "id"})
      */
-    public function deleteVehicle(Vehicle $vehicle, EntityManagerInterface $entityManager) {
+    public function deleteVehicle(Vehicle $vehicle, EntityManagerInterface $entityManager)
+    {
 
         /**
          * Fonction de suppression de véhicule et vérifier s'il peut les supprimer.
