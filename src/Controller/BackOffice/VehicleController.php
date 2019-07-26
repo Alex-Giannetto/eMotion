@@ -32,7 +32,7 @@ class VehicleController extends AbstractController
 
         $vehicles = ($this->isGranted("ROLE_ADMIN")) ? $vehicleRepository->findall() : $this->getUser()->getCarDealer()->getVehicles();
 
-        return $this->render('vehicle/list.html.twig', [
+        return $this->render('bo/vehicle/list.html.twig', [
             'vehicles' => $vehicles
         ]);
     }

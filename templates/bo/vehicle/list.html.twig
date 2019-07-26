@@ -9,19 +9,29 @@
 
             <h1 class="pt-2 pb-4">Liste des véhicules</h1>
 
-            <table class="table table-striped">
+            <table class="table table-striped" id="vehicleList">
                 <thead>
                 <tr>
+                    <th class="text-center">ID</th>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <th class="text-center">Concessionaire</th>
+                    {% endif %}
                     <th class="text-center">Marque</th>
                     <th class="text-center">Modèle</th>
+                    <th class="text-center">Plaque d'imatriculation</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for vehicle in vehicles %}
                     <tr>
+                        <th class="text-center">{{ vehicle.id }}</th>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <td class="text-center">{{ vehicle.carDealer.name }}</td>
+                        {% endif %}
                         <td class="text-center">{{ vehicle.brand }}</td>
                         <td class="text-center">{{ vehicle.model }}</td>
+                        <td class="text-center">{{ vehicle.matriculation }}</td>
                         <td>
                             <a href="{{ path('bo__vehicle__info', {id: vehicle.id}) }}">
                                 <ion-icon name="arrow-forward"></ion-icon>
@@ -33,6 +43,15 @@
             </table>
         </div>
     </div>
+{% endblock %}
 
 
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function () {
+            $('#vehicleList').DataTable();
+            $('.dataTables_length').addClass('bs-select');
+        });
+    </script>
 {% endblock %}
