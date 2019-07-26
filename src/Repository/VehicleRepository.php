@@ -21,6 +21,8 @@ class VehicleRepository extends ServiceEntityRepository
 
     public function listVehicleEmployeeConcession(){
 
+        // todo : WTF ??  $this->getUser()->getCarDealer()->getVehicles()
+
         $vehicule = $this->getEntityManager()->createQuery("SELECT * 
         FROM vehicle v , user u 
         WHERE v.id = u.id
@@ -30,6 +32,8 @@ class VehicleRepository extends ServiceEntityRepository
     }
 
     public function editVehicle(){
+
+        // todo WTF ???
 
         $vehicule = $this->getEntityManager()->createQuery("
         UPDATE vehicule

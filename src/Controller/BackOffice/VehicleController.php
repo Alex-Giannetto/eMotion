@@ -92,7 +92,7 @@ class VehicleController extends AbstractController
     /**
      * @Route("/add", name="bo__vehicle__add")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response // todo : à supprimer
      */
     public function addVehicle(Request $request){
 
@@ -106,7 +106,7 @@ class VehicleController extends AbstractController
         $form = $this->createForm(AddVehicleType::class, $vehicle);
         $form->handleRequest($request);
 
-        /* A ajouter ici condition avec carDealer et sans carDealer*/
+        /* A ajouter ici condition avec carDealer et sans carDealer*/ // todo : il y a forcément un car dealer
             if($form->isSubmitted() && $form->isValid()) {
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($vehicle);
