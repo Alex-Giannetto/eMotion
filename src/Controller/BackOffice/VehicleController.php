@@ -41,12 +41,12 @@ class VehicleController extends AbstractController
     /**
      * @Route("/info/{id}", name="bo__vehicle__info")
      * @ParamConverter("vehicle", options={"id" = "id"})
-     * get Vehicle Info
      */
-
     public function vehicleInfo(Vehicle $vehicle)
     {
-        return $this->render('vehicle/info.html.twig', [
+        $this->denyAccessUnlessGranted('POST_VIEW', $vehicle);
+
+        return $this->render('bo/vehicle/info.html.twig', [
             'vehicle' => $vehicle
         ]);
     }
