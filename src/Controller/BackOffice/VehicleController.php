@@ -57,7 +57,6 @@ class VehicleController extends AbstractController
      */
     public function editVehicle(Vehicle $vehicle, Request $request)
     {
-
         /**
          * Vérifier qu'utilisateur a le droit de modifier ce vehicule
          * Modifier les données d'un véhicule
@@ -77,7 +76,7 @@ class VehicleController extends AbstractController
             }
         }
 
-        return $this->render('vehicle/edit.html.twig', [
+        return $this->render('bo/vehicle/edit.html.twig', [
             'form' => $form->createView(),
         ]);
     }
