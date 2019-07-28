@@ -15,7 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class EditVehicleType extends AbstractType
+class VehicleType extends AbstractType
 {
     /**
      * @var AuthorizationCheckerInterface
@@ -34,6 +34,11 @@ class EditVehicleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('vehicleType', EntityType::class, [
+                'class' => \App\Entity\VehicleType::class,
+                'choice_label' => 'label',
+                'label' => 'Type de véhicule'
+            ])
             ->add('brand', TextType::class, array('label' => 'Marque'))
             ->add('model', TextType::class, array('label' => 'Modèle'))
             ->add('serialNumber', TextType::class, array('label' => 'Numéro de série'))
@@ -51,6 +56,7 @@ class EditVehicleType extends AbstractType
             $builder->add('carDealer', EntityType::class, [
                 'class' => CarDealer::class,
                 'choice_label' => 'name',
+                'label' => 'Concessionaire'
             ]);
         }
 

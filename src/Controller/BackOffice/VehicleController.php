@@ -4,7 +4,7 @@ namespace App\Controller\BackOffice;
 
 use App\Entity\Vehicle;
 use App\Form\AddVehicleType;
-use App\Form\EditVehicleType;
+use App\Form\VehicleType;
 use App\Repository\VehicleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -64,7 +64,7 @@ class VehicleController extends AbstractController
 
         $this->denyAccessUnlessGranted("POST_EDIT", $vehicle);
 
-        $form = $this->createForm(EditVehicleType::class, $vehicle);
+        $form = $this->createForm(VehicleType::class, $vehicle);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
