@@ -55,28 +55,27 @@ class VehicleController extends AbstractController
      * @Route("/edit/{id}", name="bo__vehicle__edit")
      * @ParamConverter("vehicle", options={"id" = "id"})
      */
-    public function editVehicle(Vehicle $vehicle, Request $request)
+    public function editVehicle(Vehicle $vehicle, Request $request, EntityManagerInterface $entityManager)
     {
         /**
          * Vérifier qu'utilisateur a le droit de modifier ce vehicule
          * Modifier les données d'un véhicule
          */
 
+        $this->denyAccessUnlessGranted("POST_EDIT", $vehicle);
+
         $form = $this->createForm(EditVehicleType::class, $vehicle);
         $form->handleRequest($request);
 
-        if ($this->isGranted("ROLE_ADMIN")) { // todo : voter
-            if ($form->isSubmitted() && $form->isValid()) {
-                $entityManager = $this->getDoctrine()->getManager();//todo : injecter dans la fonction
-                $entityManager->persist($vehicle);
-                $entityManager->flush();
-                return $this->redirectToRoute('bo__vehicle__info', [
-                    'id' => $vehicle->getId()
-                ]);
-            }
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($vehicle);
+            $entityManager->flush();
+            return $this->redirectToRoute('bo__vehicle__info', [
+                'id' => $vehicle->getId()
+            ]);
         }
 
-        return $this->render('bo/vehicle/edit.html.twig', [
+        return $this->render('bo/edit.html.twig', [
             'form' => $form->createView(),
         ]);
     }
