@@ -2,43 +2,68 @@
 
 namespace App\Form;
 
+use App\Entity\CarDealer;
 use App\Entity\Vehicle;
-use Doctrine\DBAL\Types\DateTimeType;
-use Faker\Provider\cs_CZ\DateTime;
-use phpDocumentor\Reflection\Types\Boolean;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class EditVehicleType extends AbstractType
 {
+    /**
+     * @var AuthorizationCheckerInterface
+     */
+    private $authorizationChecker;
+
+
+    /**
+     * EditVehicleType constructor.
+     */
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker)
+    {
+        $this->authorizationChecker = $authorizationChecker;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('brand',TextType::class, array('label' => 'Marque'))
-            ->add('model',TextType::class, array('label' => 'Modèle'))
-            ->add('serialNumber',TextType::class, array('label' => 'Numéro de série'))
-            ->add('color',TextType::class, array('label' => 'Couleur'))
-            ->add('autonomy',NumberType::class, array('label' => 'Autonomie'))
-            ->add('dailyDistance',NumberType::class, array('label' => 'Distance par jour'))
-            ->add('matriculation',TextType::class, array('label' => 'Plaque d\'immatriculation'))
-            ->add('kilometers',NumberType::class, array('label' => 'Kilomètres'))
-            ->add('purchasingDate',DateType::class, array('label' => 'Date d\'achat'))
-            ->add('state',CheckboxType::class, array('label' => 'Etat'))
-            ->add('minDailyPrice', NumberType::class, array('label' => 'Prix minimum par jour'))
+            ->add('brand', TextType::class, array('label' => 'Marque'))
+            ->add('model', TextType::class, array('label' => 'Modèle'))
+            ->add('serialNumber', TextType::class, array('label' => 'Numéro de série'))
+            ->add('color', TextType::class, array('label' => 'Couleur'))
+            ->add('autonomy', NumberType::class, array('label' => 'Autonomie'))
+            ->add('dailyDistance', NumberType::class, array('label' => 'Distance par jour'))
+            ->add('matriculation', TextType::class, array('label' => 'Plaque d\'immatriculation'))
+            ->add('kilometers', NumberType::class, array('label' => 'Kilomètres'))
+            ->add('purchasingDate', DateType::class, array('label' => 'Date d\'achat'))
             ->add('purchasingPrice', NumberType::class, array('label' => 'Prix d\'achat'))
             ->add('dailyPrice', NumberType::class, array('label' => 'Prix par jour'))
+            ->add('minDailyPrice', NumberType::class, array('label' => 'Prix minimum par jour'));
+
+        if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+            $builder->add('carDealer', EntityType::class, [
+                'class' => CarDealer::class,
+                'choice_label' => 'name',
+            ]);
+        }
+
+        $builder
+            ->add('state', ChoiceType::class, [
+                'choices' => ['Afficher' => true, 'Masquer' => false],
+                'label' => ' '
+            ])
             ->add('submit', SubmitType::class, array('label' => 'Valider'));
-        ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public
+    function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Vehicle::class,
