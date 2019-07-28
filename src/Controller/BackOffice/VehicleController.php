@@ -95,7 +95,7 @@ class VehicleController extends AbstractController
          */
 
         $vehicle = new Vehicle();
-        $form = $this->createForm(AddVehicleType::class, $vehicle);
+        $form = $this->createForm(VehicleType::class, $vehicle);
         $form->handleRequest($request);
 
         /* A ajouter ici condition avec carDealer et sans carDealer*/ // todo : il y a forcément un car dealer
