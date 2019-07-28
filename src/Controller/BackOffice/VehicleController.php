@@ -44,7 +44,7 @@ class VehicleController extends AbstractController
      */
     public function vehicleInfo(Vehicle $vehicle)
     {
-        $this->denyAccessUnlessGranted('POST_VIEW', $vehicle);
+        $this->denyAccessUnlessGranted('VEHICLE_VIEW', $vehicle);
 
         return $this->render('bo/vehicle/info.html.twig', [
             'vehicle' => $vehicle
@@ -62,7 +62,7 @@ class VehicleController extends AbstractController
          * Modifier les données d'un véhicule
          */
 
-        $this->denyAccessUnlessGranted("POST_EDIT", $vehicle);
+        $this->denyAccessUnlessGranted("VEHICLE_EDIT", $vehicle);
 
         $form = $this->createForm(VehicleType::class, $vehicle);
         $form->handleRequest($request);
@@ -127,6 +127,8 @@ class VehicleController extends AbstractController
         /**
          * Fonction de suppression de véhicule et vérifier s'il peut les supprimer.
          */
+
+        $this->denyAccessUnlessGranted('VEHICLE_DELETE', $vehicle);
 
         $entityManager->remove($vehicle);
         $entityManager->flush();
