@@ -33,9 +33,7 @@ class VehicleVoter extends Voter
 
     protected function supports($attribute, $subject)
     {
-        // replace with your own logic
-        // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, ['POST_EDIT', 'POST_VIEW'])
+        return in_array($attribute, ['VEHICLE_EDIT', 'VEHICLE_VIEW', 'VEHICLE_DELETE'])
             && $subject instanceof \App\Entity\Vehicle;
     }
 
@@ -55,10 +53,13 @@ class VehicleVoter extends Voter
         }
 
         switch ($attribute) {
-            case 'POST_EDIT':
+            case 'VEHICLE_EDIT':
                 return $this->canView($user, $subject);
 
-            case 'POST_VIEW':
+            case 'VEHICLE_VIEW':
+                return $this->canView($user, $subject);
+
+            case 'VEHICLE_DELETE':
                 return $this->canView($user, $subject);
 
             default:
