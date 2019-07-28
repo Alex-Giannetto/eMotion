@@ -95,10 +95,14 @@ class VehicleController extends AbstractController
          */
 
         $vehicle = new Vehicle();
+
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $vehicle->setCarDealer($this->getUser()->getCarDealer());
+        }
+
         $form = $this->createForm(VehicleType::class, $vehicle);
         $form->handleRequest($request);
 
-        /* A ajouter ici condition avec carDealer et sans carDealer*/ // todo : il y a forcément un car dealer
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($vehicle);
@@ -108,7 +112,7 @@ class VehicleController extends AbstractController
             ]);
         }
 
-        return $this->render('vehicle/add.html.twig', [
+        return $this->render('bo/edit.html.twig', [
             'form' => $form->createView(),
         ]);
     }
