@@ -1,7 +1,5 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}eMotion - Liste des véhicules{% endblock %}
-
 {% block body %}
     <div class="infoPage">
         <div class="container">
@@ -11,17 +9,23 @@
             <div class="row mb-5">
                 <div class="col-md-8">
                     <div class="jumbotron">
+                        <p><b>ID :</b> {{ vehicle.id }}</p>
+                        <p><b>Type :</b> {{ vehicle.vehicleType.label }}</p>
+                        <p><b>Concessionaire :</b> {{ vehicle.carDealer.name }}</p>
                         <p><b>Marque :</b> {{ vehicle.brand }}</p>
                         <p><b>Modèle :</b> {{ vehicle.model }}</p>
                         <p><b>Numéro de série :</b> {{ vehicle.serialNumber }}</p>
                         <p><b>Couleur :</b> {{ vehicle.color }}</p>
-                        <p><b>Autonomie :</b> {{ vehicle.autonomy }}</p>
-                        <p><b>Distance par jour :</b> {{ vehicle.dailyDistance }}</p>
+                        <p><b>Autonomie :</b> {{ vehicle.autonomy }} km</p>
+                        <p><b>Distance max :</b> {{ vehicle.dailyDistance }} km/j</p>
                         <p><b>Immatriculation :</b> {{ vehicle.matriculation }}</p>
-                        <p><b>Kilomètres :</b> {{ vehicle.kilometers }}</p>
+                        <p><b>Kilomètres :</b> {{ vehicle.kilometers }} km</p>
                         <p><b>Date d'achat :</b> {{ vehicle.purchasingDate|date('d/m/Y') }}</p>
-                        <p><b>Etat :</b> {{ vehicle.state }}</p>
-                        <p><b>Prix par jour :</b> {{ vehicle.dailyPrice }}</p>
+                        <p><b>Prix d'achat :</b> {{ vehicle.purchasingPrice }}€</p>
+                        <p><b>Etat :</b> {{ vehicle.state? 'Affiché' : 'Masqué' }}</p>
+                        <p><b>Prix par jour :</b> {{ vehicle.dailyPrice }}€</p>
+                        <p><b>Prix minimum par jour :</b> {{ vehicle.minDailyPrice }}€</p>
+                        <p><b>Date de création :</b> {{ vehicle.createdAt|date('d/m/Y') }}</p>
                     </div>
 
                     <div class="userEditSection">
