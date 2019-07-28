@@ -56,7 +56,7 @@ class VehicleVoter extends Voter
 
         switch ($attribute) {
             case 'POST_EDIT':
-                return false;
+                return $this->canView($user, $subject);
 
             case 'POST_VIEW':
                 return $this->canView($user, $subject);
@@ -67,7 +67,7 @@ class VehicleVoter extends Voter
     }
 
 
-    function canView(User $user, Vehicle $vehicle)
+    function canView(User $user, Vehicle $vehicle): bool
     {
         $vehicles = $this->vehicleRepository->findBy(['carDealer' => $user->getCarDealer()->getId()]);
         return in_array($vehicle, $vehicles);
