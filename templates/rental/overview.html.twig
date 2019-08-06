@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                {% include 'components/vehicleInfo.html.twig' with {vehicle : rental.vehicle} only %}
+            </div>
+
+            <div class="col-md-4">
+                {% include 'components/overwiewRentalInfo.html.twig' with {rental : rental, carDealer: rental.vehicle.carDealer} only %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

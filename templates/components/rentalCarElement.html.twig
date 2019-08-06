@@ -28,6 +28,8 @@
             {#<span class="price__byDay">/jour</span>#}
         </div>
 
-        <button class='btn btn-primary btn-block'>Réserver</button>
+        <a href="{{ path('rental__overview', {dateStart: '2019-07-30', dateEnd: '2019-07-31', carDealer: 1, vehicle: vehicle.id}) }}">
+            <button class='btn btn-primary btn-block'>Réserver</button>
+        </a>
     </div>
 </div>
