@@ -8,6 +8,7 @@ use App\Entity\Vehicle;
 use App\Repository\CarDealerRepository;
 use App\Repository\VehicleRepository;
 use App\Repository\VehicleTypeRepository;
+use App\Service\RentalService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,7 +45,7 @@ class RentalController extends AbstractController
      * @ParamConverter("carDealer", options={"id" = "carDealer"})
      * @ParamConverter("vehicle", options={"id" = "vehicle"})
      */
-    public function overview(string $dateStart, string $dateEnd, CarDealer $carDealer, Vehicle $vehicle, VehicleRepository $vehicleRepository)
+    public function overview(string $dateStart, string $dateEnd, CarDealer $carDealer, Vehicle $vehicle, VehicleRepository $vehicleRepository, RentalService $rentalService)
     {
 
         $availableVehicleForSelectedDate = $vehicleRepository->getAvailableVehicle($vehicle->getVehicleType()->getId(), $carDealer->getId(), $dateStart, $dateEnd);
@@ -61,7 +62,8 @@ class RentalController extends AbstractController
         $rental->setPrice($vehicle->getDailyPrice());
 
         return $this->render('rental/overview.html.twig', [
-            'rental' => $rental
+            'rental' => $rental,
+            'rentalService' => $rentalService,
         ]);
 
     }

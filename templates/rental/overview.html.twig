@@ -8,7 +8,7 @@
             </div>
 
             <div class="col-md-4">
-                {% include 'components/overwiewRentalInfo.html.twig' with {rental : rental, carDealer: rental.vehicle.carDealer} only %}
+                {% include 'components/overwiewRentalInfo.html.twig' with {rental : rental, carDealer: rental.vehicle.carDealer, rentalService: rentalService} only %}
             </div>
         </div>
     </div>

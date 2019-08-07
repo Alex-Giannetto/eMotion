@@ -43,15 +43,21 @@
                 </div>
             </div>
         {% endif %}
+
+
+        <h2 class="mb-4">Prix</h2>
+        <div class="row">
+            {{ rentalService.getPriceForDate(rental.vehicle, rental.startRentalDate, rental.estimatedReturnDate) }} €
+        </div>
     </div>
 
     {% if rental.client %}
         <a href="{{ path('login') }}">
-            <button class="btn btn-block btn-primary">Reserver</button>
+            <button class="btn btn-block btn-primary">Réserver</button>
         </a>
     {% else %}
         <a href="{{ path('login') }}">
-            <button class="btn btn-block btn-outline-primary">Vous devez être connecté</button>
+            <button class="btn btn-block btn-outline-primary">Réserver</button>
         </a>
     {% endif %}
 
