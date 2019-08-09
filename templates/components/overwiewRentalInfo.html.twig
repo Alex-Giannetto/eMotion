@@ -45,20 +45,20 @@
         {% endif %}
 
 
-        <h2 class="mb-4">Prix</h2>
         <div class="row">
-            {{ rentalService.getPriceForDate(rental.vehicle, rental.startRentalDate, rental.estimatedReturnDate) }} €
+
+            <div class="col-xl-6 info-group">
+                <p class="info-group__label">Prix total</p>
+                <p class="info-group__value">{{ rentalService.getPriceWithPromotionForDate(rental.vehicle, rental.startRentalDate, rental.estimatedReturnDate) }}
+                    €</p>
+            </div>
+
         </div>
     </div>
 
-    {% if rental.client %}
-        <a href="{{ path('login') }}">
-            <button class="btn btn-block btn-primary">Réserver</button>
-        </a>
-    {% else %}
-        <a href="{{ path('login') }}">
-            <button class="btn btn-block btn-outline-primary">Réserver</button>
-        </a>
-    {% endif %}
+    <a href="{{ path('login') }}">
+        <button class="btn btn-block btn-primary">Réserver</button>
+    </a>
+
 
 </div>

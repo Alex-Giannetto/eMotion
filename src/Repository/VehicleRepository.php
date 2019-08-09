@@ -47,6 +47,7 @@ class VehicleRepository extends ServiceEntityRepository
                       and r.estimatedReturnDate > :end
                     )
                 )
+                ORDER BY v.dailyPrice
             ")
             ->setParameter(':idType', $idType)
             ->setParameter(':idLocation', $idLocation)

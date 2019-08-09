@@ -13,7 +13,7 @@
                     {% for vehicle in vehicles %}
                         <div class="row">
                             <div class="col-md-12">
-                                {% include 'components/rentalCarElement.html.twig' with {vehicle : vehicle} only %}
+                                {% include 'components/rentalCarElement.html.twig' with {vehicle : vehicle, rentalService: rentalService, dateStart: dateStart, dateEnd: dateEnd} only %}
                             </div>
                         </div>
                     {% endfor %}
@@ -47,7 +47,7 @@
                             </div>
                             <input type="date" id="start" name="date_start"
                                    class="form-control bg-white border-0 pl-0"
-                                   value="{{ dateStart }}">
+                                   value="{{ dateStart|date('d/m/Y') }}">
                         </div>
 
 
@@ -58,7 +58,7 @@
                                         name="calendar"></ion-icon></span>
                             </div>
                             <input type="date" id="end" name="date_end" class="form-control bg-white border-0 pl-0"
-                                   value="{{ dateEnd }}">
+                                   value="{{ dateEnd|date('d/m/Y') }}">
                         </div>
 
                         <label class="mb-0" for="type">Type</label>

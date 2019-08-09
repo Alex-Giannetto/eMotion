@@ -9,6 +9,7 @@ use App\Repository\CarDealerRepository;
 use App\Repository\VehicleRepository;
 use App\Repository\VehicleTypeRepository;
 use App\Service\RentalService;
+use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +20,7 @@ class RentalController extends AbstractController
     /**
      * @Route("/search", name="rental__search")
      */
-    public function search(Request $request, VehicleRepository $vehicleRepository, VehicleTypeRepository $vehicleTypeRepository, CarDealerRepository $carDealerRepository)
+    public function search(Request $request, VehicleRepository $vehicleRepository, VehicleTypeRepository $vehicleTypeRepository, CarDealerRepository $carDealerRepository, RentalService $rentalService)
     {
         $dateStart = $request->query->get('date_start');
         $dateEnd = $request->query->get('date_end');
@@ -27,6 +28,13 @@ class RentalController extends AbstractController
         $idLocation = $request->query->get('location');
 
         $vehicles = $vehicleRepository->getAvailableVehicle($idTypeVehicle, $idLocation, $dateStart, $dateEnd);
+
+
+        $dateStart = DateTime::createFromFormat('d/m/Y', $dateStart);
+        $dateEnd = DateTime::createFromFormat('d/m/Y', $dateEnd);
+
+
+        // todo: check if empty value !!!!
 
         return $this->render('rental/index.html.twig', [
             'vehicles' => $vehicles,
@@ -36,6 +44,8 @@ class RentalController extends AbstractController
             'dateEnd' => $dateEnd,
             'idLocation' => $idLocation,
             'idTypeVehicle' => $idTypeVehicle,
+            'rentalService' => $rentalService,
+
         ]);
     }
 
@@ -57,8 +67,8 @@ class RentalController extends AbstractController
         $rental = new Rental();
         $rental->setClient($this->getUser());
         $rental->setVehicle($vehicle);
-        $rental->setStartRentalDate(new \DateTime($dateStart));
-        $rental->setEstimatedReturnDate(new \DateTime($dateEnd));
+        $rental->setStartRentalDate(new DateTime($dateStart));
+        $rental->setEstimatedReturnDate(new DateTime($dateEnd));
         $rental->setPrice($vehicle->getDailyPrice());
 
         return $this->render('rental/overview.html.twig', [

@@ -23,12 +23,12 @@
     <div class="car_price">
 
         <div class="price">
-            <span class="price__old">54,99€</span>
-            <span class="price__current">{{ vehicle.dailyPrice }}€*</span>
-            {#<span class="price__byDay">/jour</span>#}
+            <span class="price__old">{{ rentalService.getPriceForDate(vehicle, dateStart, dateEnd) }}€</span>
+            <span class="price__current">{{ rentalService.getPriceWithPromotionForDate(vehicle, dateStart, dateEnd) }}€</span>
+            {#            <span class="price__byDay">/jour</span>#}
         </div>
 
-        <a href="{{ path('rental__overview', {dateStart: '2019-07-30', dateEnd: '2019-07-31', carDealer: 1, vehicle: vehicle.id}) }}">
+        <a href="{{ path('rental__overview', {dateStart: dateStart|date('Y-m-d'), dateEnd: dateEnd|date('Y-m-d'), carDealer: 1, vehicle: vehicle.id}) }}">
             <button class='btn btn-primary btn-block'>Réserver</button>
         </a>
     </div>
