@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Vehicle;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -28,7 +29,7 @@ class VehicleRepository extends ServiceEntityRepository
     }
 
 
-    public function getAvailableVehicle(int $idType, int $idLocation, string $start, string $end)
+    public function getAvailableVehicle(int $idType, int $idLocation, DateTime $start, DateTime $end)
     {
         return $this->entityManager
             ->createQuery("
@@ -51,8 +52,8 @@ class VehicleRepository extends ServiceEntityRepository
             ")
             ->setParameter(':idType', $idType)
             ->setParameter(':idLocation', $idLocation)
-            ->setParameter(':start', $start)
-            ->setParameter(':end', $end)
+            ->setParameter(':start', $start->format('Y-m-d'))
+            ->setParameter(':end', $end->format('Y-m-d'))
             ->getResult();
 
     }

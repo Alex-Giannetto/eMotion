@@ -56,7 +56,7 @@
         </div>
     </div>
 
-    <a href="{{ path('login') }}">
+    <a href="{{ path('rental__book', {dateStart: rental.startRentalDate|date('Y-m-d'), dateEnd: rental.estimatedReturnDate|date('Y-m-d'), vehicle: rental.vehicle.id}) }}">
         <button class="btn btn-block btn-primary">Réserver</button>
     </a>
 

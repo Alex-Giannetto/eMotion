@@ -4,11 +4,28 @@
 namespace App\Service;
 
 
+use App\Entity\Rental;
 use App\Entity\Vehicle;
+use App\Repository\VehicleRepository;
+use DateTime;
 
 class RentalService
 {
-    public function getPriceForDate(Vehicle $vehicle, \DateTime $start, \DateTime $end)
+    /**
+     * @var VehicleRepository
+     */
+    private $vehicleRepository;
+
+
+    /**
+     * RentalService constructor.
+     */
+    public function __construct(VehicleRepository $vehicleRepository)
+    {
+        $this->vehicleRepository = $vehicleRepository;
+    }
+
+    public function getPriceForDate(Vehicle $vehicle, DateTime $start, DateTime $end)
     {
 
         $dayCount = $start->diff($end)->format("%a");
@@ -22,7 +39,7 @@ class RentalService
         return $vehicle->getDailyPrice() * ++$dayCount;
     }
 
-    public function getPriceWithPromotionForDate(Vehicle $vehicle, \DateTime $start, \DateTime $end)
+    public function getPriceWithPromotionForDate(Vehicle $vehicle, DateTime $start, DateTime $end)
     {
 
         $dayCount = $start->diff($end)->format("%a");
@@ -41,6 +58,20 @@ class RentalService
         }
 
         return round(array_sum($prices), 2);
+    }
+
+    public function rentalIsPossible(Rental $rental): bool
+    {
+        return !in_array(
+            $rental->getVehicle(),
+
+            $this->vehicleRepository->getAvailableVehicle(
+                $rental->getVehicle()->getId(),
+                $rental->getVehicle()->getCarDealer()->getId(),
+                $rental->getStartRentalDate(),
+                $rental->getEstimatedReturnDate()
+            )
+        );
     }
 
 

@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use DateTimeInterface;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -59,7 +59,7 @@ class Rental
      */
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new DateTime();
     }
 
 
@@ -92,36 +92,36 @@ class Rental
         return $this;
     }
 
-    public function getStartRentalDate(): ?DateTimeInterface
+    public function getStartRentalDate(): ?DateTime
     {
         return $this->startRentalDate;
     }
 
-    public function setStartRentalDate(DateTimeInterface $startRentalDate): self
+    public function setStartRentalDate(DateTime $startRentalDate): self
     {
         $this->startRentalDate = $startRentalDate;
 
         return $this;
     }
 
-    public function getEstimatedReturnDate(): ?DateTimeInterface
+    public function getEstimatedReturnDate(): ?DateTime
     {
         return $this->estimatedReturnDate;
     }
 
-    public function setEstimatedReturnDate(DateTimeInterface $estimatedReturnDate): self
+    public function setEstimatedReturnDate(DateTime $estimatedReturnDate): self
     {
         $this->estimatedReturnDate = $estimatedReturnDate;
 
         return $this;
     }
 
-    public function getRealReturnDate(): ?DateTimeInterface
+    public function getRealReturnDate(): ?DateTime
     {
         return $this->realReturnDate;
     }
 
-    public function setRealReturnDate(DateTimeInterface $realReturnDate): self
+    public function setRealReturnDate(DateTime $realReturnDate): self
     {
         $this->realReturnDate = $realReturnDate;
 
@@ -140,12 +140,12 @@ class Rental
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTimeInterface
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 

@@ -15,6 +15,13 @@
     </head>
     <body>
         {% include 'components/navbar.html.twig' %}
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
         {% block body %}{% endblock %}
         {% block javascripts %}
             <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
