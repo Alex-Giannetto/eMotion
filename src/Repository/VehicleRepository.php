@@ -29,31 +29,24 @@ class VehicleRepository extends ServiceEntityRepository
     }
 
 
-    public function getAvailableVehicle(int $idType, int $idLocation, DateTime $start, DateTime $end)
+    public function getAvailableVehicles(int $idType, int $idLocation, DateTime $start, DateTime $end)
     {
-        return $this->entityManager
-            ->createQuery("
-                SELECT v
-                FROM App\Entity\Vehicle v
-                WHERE v.state = 1
-                AND v.vehicleType = :idType
-                AND v.carDealer = :idLocation
-                AND v NOT IN (
-                    SELECT r
-                    FROM App\Entity\Rental r
-                    WHERE r.startRentalDate BETWEEN :start AND :end
-                    OR  r.estimatedReturnDate BETWEEN :start AND :end
-                    OR (
-                      r.startRentalDate < :start
-                      and r.estimatedReturnDate > :end
-                    )
-                )
-                ORDER BY v.dailyPrice
-            ")
+
+        return $this->createQueryBuilder('v')
+            ->leftJoin('App\Entity\Rental', 'r', 'WITH', 'v = r.vehicle')
+            ->where('v.state = 1')
+            ->andWhere('v.vehicleType = :idType')
+            ->andWhere('v.carDealer = :idLocation')
+            ->andWhere('r is null or NOT (
+                r.startRentalDate  BETWEEN :start AND :end
+                OR r.estimatedReturnDate  BETWEEN :start AND :end
+                OR(r.startRentalDate < :start AND r.estimatedReturnDate > :end))')
+            ->orderBy('v.dailyPrice')
             ->setParameter(':idType', $idType)
             ->setParameter(':idLocation', $idLocation)
             ->setParameter(':start', $start->format('Y-m-d'))
             ->setParameter(':end', $end->format('Y-m-d'))
+            ->getQuery()
             ->getResult();
 
     }

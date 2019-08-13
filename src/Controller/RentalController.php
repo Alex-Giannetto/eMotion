@@ -42,7 +42,7 @@ class RentalController extends AbstractController
         $idTypeVehicle = $request->query->get('type');
         $idLocation = $request->query->get('location');
 
-        $vehicles = $vehicleRepository->getAvailableVehicle($idTypeVehicle, $idLocation, $dateStart, $dateEnd);
+        $vehicles = $vehicleRepository->getAvailableVehicles($idTypeVehicle, $idLocation, $dateStart, $dateEnd);
 
         return $this->render('rental/index.html.twig', [
             'vehicles' => $vehicles,
@@ -76,7 +76,7 @@ class RentalController extends AbstractController
             $this->redirectToRoute('home');
         }
 
-        $availableVehicleForSelectedDate = $vehicleRepository->getAvailableVehicle(
+        $availableVehicleForSelectedDate = $vehicleRepository->getAvailableVehicles(
             $vehicle->getVehicleType()->getId(),
             $carDealer->getId(),
             $dateStart,

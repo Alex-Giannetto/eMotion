@@ -65,7 +65,7 @@ class RentalService
         return !in_array(
             $rental->getVehicle(),
 
-            $this->vehicleRepository->getAvailableVehicle(
+            $this->vehicleRepository->getAvailableVehicles(
                 $rental->getVehicle()->getId(),
                 $rental->getVehicle()->getCarDealer()->getId(),
                 $rental->getStartRentalDate(),
