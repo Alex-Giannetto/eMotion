@@ -17,8 +17,10 @@
         {% include 'components/navbar.html.twig' %}
 
         {% for message in app.flashes('success') %}
-            <div class="alert alert-success">
-                {{ message }}
+            <div class="container">
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
             </div>
         {% endfor %}
 
