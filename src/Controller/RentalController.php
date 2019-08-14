@@ -7,7 +7,6 @@ use App\Entity\Rental;
 use App\Entity\Vehicle;
 use App\Entity\VehicleType;
 use App\Repository\CarDealerRepository;
-use App\Repository\RentalRepository;
 use App\Repository\VehicleRepository;
 use App\Repository\VehicleTypeRepository;
 use App\Service\PDFService;
@@ -224,9 +223,10 @@ class RentalController extends AbstractController
             $pdfService = new PDFService();
             $pdfService->generatePDF(
                 $this->renderView(
-                    'pdf/test.html.twig',
+                    'pdf/preContract.html.twig',
                     [
-                        'title' => "Welcome to our PDF Test",
+                        'rental' => $rental,
+                        'rentalService' => $rentalService,
                     ]
                 )
             );
@@ -239,41 +239,6 @@ class RentalController extends AbstractController
             'form' => $form->createView(),
         ]);
 
-    }
-
-
-    /**
-     * @Route("/pdf/{generate}", name="pdf_test")
-     */
-    public function pdf(
-        int $generate,
-        RentalRepository $rentalRepository,
-        VehicleRepository $vehicleRepository
-    ) {
-
-        $rental = $rentalRepository->findAll()[0];
-        $rentalService = new RentalService($vehicleRepository);
-
-        $params = [
-            'rental' => $rental,
-            'rentalService' => $rentalService,
-
-        ];
-
-        if ($generate === 1) {
-            $pdfService = new PDFService();
-            $pdfService->generatePDF(
-                $this->renderView(
-                    'pdf/test.html.twig',
-                    $params
-                )
-            );
-        }
-
-        return $this->render(
-            'pdf/test.html.twig',
-            $params
-        );
     }
 
 

@@ -33,7 +33,7 @@ class PDFService
 
         // Output the generated PDF to Browser (inline view)
         $dompdf->stream("mypdf.pdf", [
-            "Attachment" => false,
+            "Attachment" => true,
         ]);
     }
 }
