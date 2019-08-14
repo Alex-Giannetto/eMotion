@@ -16,12 +16,14 @@
     <body>
         {% include 'components/navbar.html.twig' %}
 
-        {% for message in app.flashes('success') %}
-            <div class="container">
-                <div class="alert alert-success">
-                    {{ message }}
+        {% for label, messages in app.flashes(['success', 'warning', 'danger']) %}
+            {% for message in messages %}
+                <div class="container">
+                    <div class="alert alert-{{ label }}">
+                        {{ message }}
+                    </div>
                 </div>
-            </div>
+            {% endfor %}
         {% endfor %}
 
         {% block body %}{% endblock %}
