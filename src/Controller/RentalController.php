@@ -7,8 +7,10 @@ use App\Entity\Rental;
 use App\Entity\Vehicle;
 use App\Entity\VehicleType;
 use App\Repository\CarDealerRepository;
+use App\Repository\RentalRepository;
 use App\Repository\VehicleRepository;
 use App\Repository\VehicleTypeRepository;
+use App\Service\PDFService;
 use App\Service\RentalService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -146,6 +148,7 @@ class RentalController extends AbstractController
         if (!$rentalService->rentalIsPossible($rental)) {
             $this->addFlash('danger',
                 'Le véhicle n\'est pas disponible aux dates renseignés ');
+
             return $this->redirectToRoute('home');
         }
 
@@ -217,6 +220,17 @@ class RentalController extends AbstractController
 
             $this->addFlash('success',
                 'Votre réservation à bien été enregistré');
+
+            $pdfService = new PDFService();
+            $pdfService->generatePDF(
+                $this->renderView(
+                    'pdf/test.html.twig',
+                    [
+                        'title' => "Welcome to our PDF Test",
+                    ]
+                )
+            );
+
         }
 
 
@@ -226,4 +240,42 @@ class RentalController extends AbstractController
         ]);
 
     }
+
+
+    /**
+     * @Route("/pdf/{generate}", name="pdf_test")
+     */
+    public function pdf(
+        int $generate,
+        RentalRepository $rentalRepository,
+        VehicleRepository $vehicleRepository
+    ) {
+
+        $rental = $rentalRepository->findAll()[0];
+        $rentalService = new RentalService($vehicleRepository);
+
+        $params = [
+            'rental' => $rental,
+            'rentalService' => $rentalService,
+
+        ];
+
+        if ($generate === 1) {
+            $pdfService = new PDFService();
+            $pdfService->generatePDF(
+                $this->renderView(
+                    'pdf/test.html.twig',
+                    $params
+                )
+            );
+        }
+
+        return $this->render(
+            'pdf/test.html.twig',
+            $params
+        );
+    }
+
+
+
 }

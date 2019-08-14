@@ -151,4 +151,9 @@ class Rental
 
         return $this;
     }
+
+    public function getEstimatedRentalDuration()
+    {
+        return $this->getStartRentalDate()->diff($this->getEstimatedReturnDate())->format("%a");
+    }
 }

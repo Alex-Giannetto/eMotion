@@ -39,7 +39,7 @@ class RentalService
     public function getPrice(Vehicle $vehicle, int $dayCount): float
     {
 
-        return $vehicle->getDailyPrice() * ++$dayCount;
+        return $vehicle->getDailyPrice() * $dayCount;
     }
 
     public function getPriceWithPromotionForDate(
@@ -60,7 +60,7 @@ class RentalService
         $minimalDailyCarPrice = ($vehicle->getMinDailyPrice() * ($dayCount < 180 ? 1.5 : 1.25));
         $prices[] = $vehicle->getDailyPrice();
 
-        for ($i = 1; $i <= $dayCount; ++$i) {
+        for ($i = 1; $i < $dayCount; ++$i) {
             $price = $prices[count($prices) - 1] * .98;
             $prices[] = $price >= $minimalDailyCarPrice ? $price : $minimalDailyCarPrice;
         }
