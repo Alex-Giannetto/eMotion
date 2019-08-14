@@ -25,8 +25,11 @@ class RentalService
         $this->vehicleRepository = $vehicleRepository;
     }
 
-    public function getPriceForDate(Vehicle $vehicle, DateTime $start, DateTime $end)
-    {
+    public function getPriceForDate(
+        Vehicle $vehicle,
+        DateTime $start,
+        DateTime $end
+    ) {
 
         $dayCount = $start->diff($end)->format("%a");
 
@@ -39,16 +42,21 @@ class RentalService
         return $vehicle->getDailyPrice() * ++$dayCount;
     }
 
-    public function getPriceWithPromotionForDate(Vehicle $vehicle, DateTime $start, DateTime $end)
-    {
+    public function getPriceWithPromotionForDate(
+        Vehicle $vehicle,
+        DateTime $start,
+        DateTime $end
+    ) {
 
         $dayCount = $start->diff($end)->format("%a");
 
         return $this->getPriceWithPromotion($vehicle, $dayCount);
     }
 
-    public function getPriceWithPromotion(Vehicle $vehicle, int $dayCount): float
-    {
+    public function getPriceWithPromotion(
+        Vehicle $vehicle,
+        int $dayCount
+    ): float {
         $minimalDailyCarPrice = ($vehicle->getMinDailyPrice() * ($dayCount < 180 ? 1.5 : 1.25));
         $prices[] = $vehicle->getDailyPrice();
 
@@ -62,16 +70,18 @@ class RentalService
 
     public function rentalIsPossible(Rental $rental): bool
     {
-        return !in_array(
+        return (
+        in_array(
             $rental->getVehicle(),
-
             $this->vehicleRepository->getAvailableVehicles(
-                $rental->getVehicle()->getId(),
+                $rental->getVehicle()->getVehicleType()->getId(),
                 $rental->getVehicle()->getCarDealer()->getId(),
                 $rental->getStartRentalDate(),
                 $rental->getEstimatedReturnDate()
             )
+            )
         );
+
     }
 
 

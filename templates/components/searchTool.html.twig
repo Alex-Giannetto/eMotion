@@ -1,70 +1,59 @@
 <div class="searchToolComponent">
     <div class="container p-5">
-        <form method="get" action="{{ path('rental__search') }}">
-            <h1 class="text-center text-white">Louer votre véhicule éléctrique</h1>
-            <div class="jumbotron mt-5 p-md-2 p-lg-5 bg-white">
-                <div class="row">
-                    <div class="col-md-4">
-                        <label class="mb-0" for="location">Lieux</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
+        {{ form_start(form) }}
+        <h1 class="text-center text-white">Louer votre véhicule éléctrique</h1>
+        <div class="jumbotron mt-5 p-md-2 p-lg-5 bg-white">
+            <div class="row">
+                <div class="col-md-4">
+                    {{ form_label(form.location, null, {'label_attr': {'class': 'mb-0'}}) }}
+                    <div class="input-group">
+                        <div class="input-group-prepend">
                                 <span class="input-group-text border-0 bg-ligthgrey">
                                     <ion-icon name="pin"></ion-icon>
                                 </span>
-                            </div>
-                            <select class="custom-select bg-ligthgrey border-0 pl-0" id="location" name="location">
-                                {% for dealer in carDealer %}
-                                    <option value="{{ dealer.id }}">{{ dealer.name }}</option>
-                                {% endfor %}
-                            </select>
                         </div>
-                    </div>
-
-                    <div class="col-md-2">
-                        <label class="mb-0" for="start">Début</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                            <span class="input-group-text border-0 bg-ligthgrey"><ion-icon
-                                        name="calendar"></ion-icon></span>
-                            </div>
-                            <input type="date" id="start" name="date_start"
-                                   class="form-control bg-ligthgrey border-0 pl-0"
-                                   value="{{ "now"|date("d/m/Y") }}">
-                        </div>
-                    </div>
-
-                    <div class="col-md-2">
-                        <label class="mb-0" for="end">Fin</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                            <span class="input-group-text border-0 bg-ligthgrey"><ion-icon
-                                        name="calendar"></ion-icon></span>
-                            </div>
-                            <input type="date" id="end" name="date_end" class="form-control bg-ligthgrey border-0 pl-0"
-                                   value="{{ "now"|date_modify("+7 day")|date("d/m/Y") }}">
-                        </div>
-                    </div>
-
-                    <div class="col-md-2">
-                        <label class="mb-0" for="type">Type</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text border-0 bg-ligthgrey"><ion-icon
-                                            name="car"></ion-icon></span>
-                            </div>
-                            <select class="custom-select bg-ligthgrey border-0 pl-0" id="type" name="type">
-                                {% for type in carType %}
-                                    <option value="{{ type.id }}">{{ type.label }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 searchTool__searchBtn">
-                        <button type="submit" class="btn btn-primary">Valider</button>
+                        {{ form_widget(form.location,  {'attr': {'class': 'custom-select bg-ligthgrey border-0 pl-0'}}) }}
                     </div>
                 </div>
+
+                <div class="col-md-2">
+                    {{ form_label(form.start, null, {'label_attr': {'class': 'mb-0'}}) }}
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text border-0 bg-ligthgrey"><ion-icon
+                                        name="calendar"></ion-icon></span>
+                        </div>
+                        {{ form_widget(form.start,  {'attr': {'class': 'custom-select bg-ligthgrey js-datepicker border-0 pl-0', 'value': "now"|date("d/m/Y") }}) }}
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    {{ form_label(form.end, null, {'label_attr': {'class': 'mb-0'}}) }}
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text border-0 bg-ligthgrey"><ion-icon
+                                        name="calendar"></ion-icon></span>
+                        </div>
+                        {{ form_widget(form.end,  {'attr': {'class': 'custom-select bg-ligthgrey js-datepicker border-0 pl-0', 'value': "now"|date_modify("+7 day")|date("d/m/Y") }}) }}
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    {{ form_label(form.type, null, {'label_attr': {'class': 'mb-0'}}) }}
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                                <span class="input-group-text border-0 bg-ligthgrey"><ion-icon
+                                            name="car"></ion-icon></span>
+                        </div>
+                        {{ form_widget(form.type,  {'attr': {'class': 'custom-select bg-ligthgrey border-0 pl-0'}}) }}
+                    </div>
+                </div>
+
+                <div class="col-md-2 searchTool__searchBtn">
+                    {{ form_widget(form.submit,  {'attr': {'class': 'btn btn-primary'}}) }}
+                </div>
             </div>
-        </form>
+        </div>
+        {{ form_end(form) }}
     </div>
 </div>
