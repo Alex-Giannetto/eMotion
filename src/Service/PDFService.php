@@ -76,7 +76,7 @@ class PDFService
     {
         $pdfFilepath = $this->params->get('preContract_directory').'/'.uniqid().'.pdf';
 
-        $template = $this->templating->render('pdf/preContract.html.twig', [
+        $template = $this->templating->render('pdf/contract.twig', [
             'rental' => $rental,
             'rentalService' => $this->rentalService,
         ]);

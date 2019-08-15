@@ -1,0 +1,264 @@
+{% extends 'pdf/basePDF.html.twig' %}
+
+{% block style %}
+    <style>
+
+        body .page:first-child {
+            page-break-before: inherit;
+        }
+
+        .page {
+            page-break-before: always;
+        }
+
+        h1, h2 {
+            color: #000;
+        }
+
+        h2 {
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        body h2:first-child {
+            margin-top: 0;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        table.full {
+            width: 100%;
+        }
+
+        table.border {
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+
+        table.border th, table.border td {
+            border: solid Silver 1px;
+            padding: 0.5em;
+        }
+
+        table.firstIsBold tr td:first-child {
+            font-weight: 900;
+            color: #525154;
+        }
+
+        .title {
+            color: #f16a12;
+        }
+
+        .rentalId {
+            text-align: right;
+            color: #979699;
+        }
+
+        .vehicleImg {
+            width: auto;
+            height: 100px;
+        }
+
+        .vehicleColor {
+            width: 100%;
+            height: 1rem;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+    <div class="page">
+        <table class="full">
+            <tr>
+                <td>
+                    <h1 class="title">Contrat de location provisoire</h1>
+                </td>
+                <td>
+                    <h3 class="rentalId">#{{ rental.id }}</h3>
+                </td>
+            </tr>
+        </table>
+
+        <h2>Vous :</h2>
+        <table class="firstIsBold">
+            <tr>
+                <td>Prénom :</td>
+                <td>{{ rental.client.firstname }}</td>
+            </tr>
+            <tr>
+                <td>Nom :</td>
+                <td>{{ rental.client.lastname }}</td>
+            </tr>
+            <tr>
+                <td>Adresse :</td>
+                <td>{{ rental.client.address }}, {{ rental.client.city }} {{ rental.client.zipcode }}</td>
+            </tr>
+        </table>
+
+        <h2>Le véhicule</h2>
+        <table class="full">
+            <tr>
+                <td>
+                    <table class=" firstIsBold">
+                        <tr>
+                            <td>
+                                Marque :
+                            </td>
+                            <td>
+                                {{ rental.vehicle.brand }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Modèle :
+                            </td>
+                            <td>
+                                {{ rental.vehicle.model }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Couleur :
+                            </td>
+                            <td>
+                                <div class="vehicleColor" style="background-color: {{ rental.vehicle.color }};"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="width: 100px">
+                    <img src="./assets/img/tesla.png" class="vehicleImg">
+                </td>
+            </tr>
+        </table>
+
+        <h2>Location</h2>
+        <table class=" firstIsBold">
+            <tr>
+                <td>
+                    Début de la location :
+                </td>
+                <td>
+                    {{ rental.startRentalDate|date('d/m/Y') }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Fin de la location :
+                </td>
+                <td>
+                    {{ rental.estimatedReturnDate|date('d/m/Y') }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Nombre de jour :
+                </td>
+                <td>
+                    {{ rental.getEstimatedRentalDuration }} jour(s)
+
+                </td>
+            </tr>
+        </table>
+
+        <h2>Prix</h2>
+        <table class="full border">
+            <tr>
+                <th>Intitulé</th>
+                <th class="text-center">Gain</th>
+                <th class="text-center">Dépense</th>
+            </tr>
+            <tr>
+                <td>Location du véhicule ({{ rental.vehicle.dailyPrice }}€/jour)</td>
+                <td class="text-center"></td>
+                <td class="text-center">{{ rentalService.getPrice(rental.vehicle, rental.getEstimatedRentalDuration) }}€
+                </td>
+            </tr>
+            <tr>
+                <td>Remise location {{ rental.getEstimatedRentalDuration < 180? 'courte' : 'longue' }} durée</td>
+                <td class="text-center">{{ rentalService.getPrice(rental.vehicle, rental.getEstimatedRentalDuration) - rentalService.getPriceWithPromotion(rental.vehicle, rental.getEstimatedRentalDuration) }}
+                    €
+                </td>
+                <td class="text-center"></td>
+            </tr>
+            <tr>
+                <td class="text-right"><b>Total à payer</b></td>
+                <td colspan="2"
+                    class="text-center">{{ rentalService.getPriceWithPromotion(rental.vehicle, rental.getEstimatedRentalDuration) }}
+                    €
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="page">
+
+        <h2>Réglement</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus amet, delectus distinctio explicabo
+            fugiat magni nemo, numquam quo recusandae tempore totam vero voluptate. Aliquid consectetur cum distinctio
+            recusandae. Aspernatur laudantium sint totam. Ad, aperiam aut dolor impedit incidunt maiores odio placeat
+            tempora tempore voluptatibus! Ad adipisci animi architecto assumenda, cum cupiditate dolore doloribus et
+            molestiae non pariatur porro, quas rerum similique, voluptas? Adipisci, blanditiis consequuntur dolore
+            dolores enim eum excepturi exercitationem, hic obcaecati qui repellendus sapiente tempora vel? A ad adipisci
+            alias aliquam aliquid atque aut autem consectetur consequuntur corporis cumque debitis dolorem dolorum eos
+            esse, et ex explicabo fugit hic impedit inventore ipsam, laboriosam laudantium libero magni maxime minus
+            nostrum placeat, quibusdam quos ratione reprehenderit sit tempora ullam veritatis voluptatem voluptatum! A
+            accusamus enim odit perferendis porro quasi? Ab asperiores, aspernatur consequatur dolorem ea esse et
+            expedita id illum inventore iste magnam minus natus neque nisi nostrum, obcaecati quas quasi qui similique
+            suscipit tempore tenetur totam voluptatem voluptatum! Aperiam atque culpa ipsam magnam magni maiores
+            molestias, nam praesentium quae voluptatum. Ab amet architecto aspernatur assumenda corporis cupiditate
+            debitis distinctio earum et eveniet explicabo facere illo ipsum minima modi nam pariatur quae quos ratione
+            sapiente sed sequi, soluta totam ullam ut vitae voluptate! Ab, accusamus adipisci autem corporis debitis
+            deleniti dicta dolor doloribus dolorum ducimus eligendi expedita explicabo fuga incidunt iste magnam
+            molestias mollitia nam neque non, perferendis, perspiciatis qui quibusdam quisquam repellendus repudiandae
+            rerum soluta sunt velit vitae. Amet architecto at commodi consectetur cum cupiditate distinctio et eveniet,
+            facere illo, itaque laboriosam libero odio officiis optio quisquam similique tempore totam ullam veritatis?
+            Animi aperiam at atque deleniti doloremque dolorum eaque excepturi, expedita id minus nam nostrum officiis
+            optio, pariatur, perferendis quibusdam similique sunt temporibus. Consequuntur corporis cumque dolore
+            eligendi eveniet impedit incidunt iste iusto minima necessitatibus nobis, non officia omnis quos repellendus
+            tempora velit? Aliquid maxime modi placeat porro vitae. Assumenda consequatur, corporis delectus deserunt
+            dignissimos earum et eum eveniet explicabo, harum id in itaque laboriosam minima modi necessitatibus nemo
+            quaerat quam quisquam quod ratione, rerum sed soluta temporibus totam. Adipisci at autem corporis culpa
+            cupiditate dignissimos distinctio dolorem doloribus ducimus ea eaque error facere id illo impedit in ipsam
+            maxime necessitatibus nihil officiis possimus quae quaerat quas quia, recusandae repellendus reprehenderit
+            repudiandae sed similique, totam velit vitae voluptate voluptatem? Debitis distinctio ipsa minus repudiandae
+            sunt. Iusto quaerat totam voluptatibus? Cum eaque expedita maiores maxime repellendus, sapiente tenetur?
+            Aspernatur, aut debitis ducimus ea magnam nam necessitatibus officiis qui sapiente voluptatibus? Aliquid
+            assumenda aut autem, cumque deleniti enim, est eveniet fuga ipsam ipsum iste maxime nam necessitatibus neque
+            numquam pariatur perferendis rem ut vitae voluptatum! Accusantium necessitatibus quae voluptate. Aspernatur,
+            consectetur, corporis dignissimos eligendi est eum fuga illo ipsa ipsam non pariatur quidem totam unde ut
+            velit, veritatis vitae! Animi delectus distinctio ea est harum inventore iste obcaecati quaerat sint
+            voluptas! Aperiam, consequatur deleniti, doloremque in iusto laborum molestiae necessitatibus nulla optio
+            possimus quas quidem, quisquam sit. Assumenda at ipsam tempora temporibus! Cum, doloremque, error. Dicta
+            dolor earum exercitationem explicabo nisi obcaecati, porro! Aliquid animi ducimus non sed velit. Fuga illo
+            maiores modi! Ad adipisci alias aliquid assumenda blanditiis ea enim fuga inventore maxime nobis
+            perspiciatis, quasi quis quo reprehenderit sint tempora totam velit voluptates. Accusamus, animi aperiam at
+            blanditiis, consequuntur dolorem ducimus ea enim esse exercitationem facilis maxime nesciunt obcaecati
+            perferendis quibusdam repellat rerum velit voluptate! Dignissimos doloribus dolorum eos facere ipsam
+            obcaecati perferendis quasi quisquam repellat sunt. Aliquam, aliquid amet blanditiis debitis distinctio
+            dolorum ea eaque eligendi error explicabo facilis hic incidunt maxime nisi quas quibusdam quisquam ratione
+            recusandae repellat soluta sunt, suscipit vitae. Animi aperiam cum dolorum ducimus ipsa magnam minus porro
+            quo rem repellendus. Alias asperiores aut corporis cum ducimus, earum eius eum ex iste itaque magnam maxime
+            nemo neque odit omnis porro quam quasi quisquam sint ullam unde velit veniam vero? Adipisci aliquam at
+            beatae delectus dignissimos distinctio dolorum earum, eum eveniet facilis fuga hic id ipsa iure laborum
+            libero magni minus natus odit porro quidem quisquam rem sapiente suscipit ut veniam voluptate. Asperiores
+            deserunt harum iste libero maxime minus ut vel vitae? Adipisci alias aliquam, aspernatur aut corporis cum
+            debitis delectus deserunt dignissimos dolorem esse fugiat labore laborum magni maxime modi natus nemo omnis
+            perferendis perspiciatis quas quod sed suscipit tenetur ut. Ab accusamus adipisci blanditiis commodi,
+            doloremque eligendi eveniet expedita explicabo facilis hic illum impedit incidunt ipsum nesciunt obcaecati
+            odio quasi quibusdam quidem quis repudiandae sapiente sequi sunt tempore vel velit vero voluptas! Eaque
+            eligendi, eum id illum laboriosam laborum obcaecati tenetur. Animi atque cum dolorum fugiat harum id
+            molestiae rerum sint? Ab dignissimos doloremque enim est fuga fugit in, ipsum iste iure labore natus neque
+            quidem ratione repellendus, sapiente unde veritatis voluptates! Accusantium amet aperiam aspernatur, aut cum
+            deserunt dignissimos eius ipsam libero natus neque officia possimus quas quidem quis temporibus vitae.</p>
+    </div>
+
+
+{% endblock %}
