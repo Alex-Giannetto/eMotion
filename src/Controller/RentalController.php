@@ -232,20 +232,16 @@ class RentalController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->getData()['cgl']) {
 
-//            $entityManager->persist($rental);
-//            $entityManager->flush();
+            $rental = $this->PDFService->generatePreContract($rental);
 
-//            $this->addFlash('success',
-//                'Votre réservation à bien été enregistré');
-
-
-            $pdf = $this->PDFService->generatePreContract($rental);
-
-            dd($pdf);
+            $this->addFlash('success',
+                'Votre réservation à bien été enregistré');
 
 
-//            return $this->redirectToRoute('home');
+            $entityManager->persist($rental);
+            $entityManager->flush();
 
+            return $this->redirectToRoute('home');
 
         }
 

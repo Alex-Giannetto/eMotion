@@ -55,6 +55,11 @@ class Rental
     private $createdAt;
 
     /**
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $pdf = [];
+
+    /**
      * Rental constructor.
      */
     public function __construct()
@@ -155,5 +160,22 @@ class Rental
     public function getEstimatedRentalDuration()
     {
         return $this->getStartRentalDate()->diff($this->getEstimatedReturnDate())->format("%a");
+    }
+
+    public function getPdf(): ?array
+    {
+        return $this->pdf;
+    }
+
+    public function setPdf(?array $pdf): self
+    {
+        $this->pdf = $pdf;
+
+        return $this;
+    }
+
+    public function addPdf(string $type, string $path)
+    {
+        $this->pdf[$type][] = [date('Y-m-d H:i:s') => $path];
     }
 }

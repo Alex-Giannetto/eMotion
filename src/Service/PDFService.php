@@ -38,7 +38,7 @@ class PDFService
         $this->templating = $templating;
     }
 
-    public function generatePDF($body, $outputPath, $attachment = null)
+    public function generatePDF($body, $outputPath)
     {
         // Configure Dompdf according to your needs
         $pdfOptions = new Options();
@@ -65,34 +65,26 @@ class PDFService
         file_put_contents($outputPath, $output);
 
         // Output the generated PDF to Browser (inline view)
-        $domPDF->stream($attachment, [
-            "Attachment" => !!$attachment,
-        ]);
+//        $domPDF->stream($attachment, [
+//            "Attachment" => !!$attachment,
+//        ]);
 
     }
 
 
-    public function generatePreContract(Rental $rental): ?Rental
+    public function generatePreContract(Rental $rental): Rental
     {
+        $pdfFilepath = $this->params->get('preContract_directory').'/'.uniqid().'.pdf';
 
+        $template = $this->templating->render('pdf/preContract.html.twig', [
+            'rental' => $rental,
+            'rentalService' => $this->rentalService,
+        ]);
 
-        // In this case, we want to write the file in the public directory
-        $publicDirectory = $this->params->get('preContract_directory');
-        // e.g /var/www/project/public/mypdf.pdf
-        $pdfFilepath = $publicDirectory.'/'.uniqid().'.pdf';
+        $this->generatePDF($template, $pdfFilepath);
 
-        $this->generatePDF(
-            $this->templating->render(
-                'pdf/preContract.html.twig',
-                [
-                    'rental' => $rental,
-                    'rentalService' => $this->rentalService,
-                ]
-            ),
-            $pdfFilepath,
-            'PreContrat-'.$rental->getId().'.pdf');
+        $rental->addPdf('Contract', $pdfFilepath);
 
         return $rental;
-
     }
 }
