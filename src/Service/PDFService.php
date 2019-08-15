@@ -4,36 +4,95 @@
 namespace App\Service;
 
 
+use App\Entity\Rental;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Twig\Environment as Templating;
 
 class PDFService
 {
+    /**
+     * @var ParameterBagInterface
+     */
+    private $params;
+    /**
+     * @var RentalService
+     */
+    private $rentalService;
 
 
-    public function generatePDF($body)
+    private $templating;
+
+
+    /**
+     * PDFService constructor.
+     */
+    public function __construct(
+        ParameterBagInterface $params,
+        Templating $templating,
+        RentalService $rentalService
+    ) {
+        $this->params = $params;
+        $this->rentalService = $rentalService;
+        $this->templating = $templating;
+    }
+
+    public function generatePDF($body, $outputPath, $attachment = null)
     {
         // Configure Dompdf according to your needs
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');
         $pdfOptions->set('isHtml5ParserEnabled', 'true');
         $pdfOptions->set('defaultFont', 'sans-serif');
+        $pdfOptions->set('isRemoteEnabled', true);
 
         // Instantiate Dompdf with our options
-        $dompdf = new Dompdf($pdfOptions);
+        $domPDF = new Dompdf($pdfOptions);
 
         // Load HTML to Dompdf
-        $dompdf->loadHtml($body);
+        $domPDF->loadHtml($body);
 
         // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
-        $dompdf->setPaper('A4', 'portrait');
+        $domPDF->setPaper('A4', 'portrait');
 
         // Render the HTML as PDF
-        $dompdf->render();
+        $domPDF->render();
+
+        $output = $domPDF->output();
+
+        // Write file to the desired path
+        file_put_contents($outputPath, $output);
 
         // Output the generated PDF to Browser (inline view)
-        $dompdf->stream("mypdf.pdf", [
-            "Attachment" => true,
+        $domPDF->stream($attachment, [
+            "Attachment" => !!$attachment,
         ]);
+
+    }
+
+
+    public function generatePreContract(Rental $rental): ?Rental
+    {
+
+
+        // In this case, we want to write the file in the public directory
+        $publicDirectory = $this->params->get('preContract_directory');
+        // e.g /var/www/project/public/mypdf.pdf
+        $pdfFilepath = $publicDirectory.'/'.uniqid().'.pdf';
+
+        $this->generatePDF(
+            $this->templating->render(
+                'pdf/preContract.html.twig',
+                [
+                    'rental' => $rental,
+                    'rentalService' => $this->rentalService,
+                ]
+            ),
+            $pdfFilepath,
+            'PreContrat-'.$rental->getId().'.pdf');
+
+        return $rental;
+
     }
 }

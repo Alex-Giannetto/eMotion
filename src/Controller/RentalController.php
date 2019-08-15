@@ -25,6 +25,27 @@ use Symfony\Component\Routing\Annotation\Route;
 class RentalController extends AbstractController
 {
     /**
+     * @var PDFService
+     */
+    private $PDFService;
+    /**
+     * @var RentalService
+     */
+    private $rentalService;
+
+    /**
+     * RentalController constructor.
+     */
+    public function __construct(
+        PDFService $PDFService,
+        RentalService $rentalService
+    ) {
+        $this->PDFService = $PDFService;
+        $this->rentalService = $rentalService;
+    }
+
+
+    /**
      * @Route("/search/{dateStart}/{dateEnd}/{carDealer}/{vehicleType}", name="rental__search")
      * @ParamConverter("carDealer", options={"id" = "carDealer"})
      * @ParamConverter("vehicleType", options={"id" = "vehicleType"})
@@ -89,8 +110,6 @@ class RentalController extends AbstractController
             ]);
         }
 
-        $rentalService = new RentalService($vehicleRepository);
-
 
         if (!$dateStart || !$dateEnd) {
             $this->addFlash('danger', 'Veuillez renseigner des dates valides');
@@ -106,7 +125,7 @@ class RentalController extends AbstractController
             'dateStart' => $dateStart,
             'dateEnd' => $dateEnd,
             'vehicles' => $vehicles,
-            'rentalService' => $rentalService,
+            'rentalService' => $this->rentalService,
         ]);
     }
 
@@ -124,8 +143,6 @@ class RentalController extends AbstractController
         VehicleRepository $vehicleRepository
     ) {
 
-        $rentalService = new RentalService($vehicleRepository);
-
         $dateStart = DateTime::createFromFormat('Y-m-d', $dateStart);
         $dateEnd = DateTime::createFromFormat('Y-m-d', $dateEnd);
 
@@ -140,11 +157,12 @@ class RentalController extends AbstractController
         $rental->setVehicle($vehicle);
         $rental->setStartRentalDate($dateStart);
         $rental->setEstimatedReturnDate($dateEnd);
-        $rental->setPrice($rentalService->getPriceForDate($vehicle, $dateStart,
+        $rental->setPrice($this->rentalService->getPriceForDate($vehicle,
+            $dateStart,
             $dateEnd));
 
 
-        if (!$rentalService->rentalIsPossible($rental)) {
+        if (!$this->rentalService->rentalIsPossible($rental)) {
             $this->addFlash('danger',
                 'Le véhicle n\'est pas disponible aux dates renseignés ');
 
@@ -153,7 +171,7 @@ class RentalController extends AbstractController
 
         return $this->render('rental/overview.html.twig', [
             'rental' => $rental,
-            'rentalService' => $rentalService,
+            'rentalService' => $this->rentalService,
         ]);
 
     }
@@ -173,8 +191,6 @@ class RentalController extends AbstractController
         EntityManagerInterface $entityManager
     ) {
 
-        $rentalService = new RentalService($vehicleRepository);
-
         $dateStart = DateTime::createFromFormat('Y-m-d', $dateStart);
         $dateEnd = DateTime::createFromFormat('Y-m-d', $dateEnd);
 
@@ -189,11 +205,12 @@ class RentalController extends AbstractController
         $rental->setVehicle($vehicle);
         $rental->setStartRentalDate($dateStart);
         $rental->setEstimatedReturnDate($dateEnd);
-        $rental->setPrice($rentalService->getPriceForDate($vehicle, $dateStart,
+        $rental->setPrice($this->rentalService->getPriceWithPromotionForDate($vehicle,
+            $dateStart,
             $dateEnd));
 
 
-        if (!$rentalService->rentalIsPossible($rental)) {
+        if (!$this->rentalService->rentalIsPossible($rental)) {
             $this->addFlash('danger',
                 'Le véhicle n\'est pas disponible aux dates renseignés');
 
@@ -214,22 +231,21 @@ class RentalController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->getData()['cgl']) {
-            $entityManager->persist($rental);
-            $entityManager->flush();
 
-            $this->addFlash('success',
-                'Votre réservation à bien été enregistré');
+//            $entityManager->persist($rental);
+//            $entityManager->flush();
 
-            $pdfService = new PDFService();
-            $pdfService->generatePDF(
-                $this->renderView(
-                    'pdf/preContract.html.twig',
-                    [
-                        'rental' => $rental,
-                        'rentalService' => $rentalService,
-                    ]
-                )
-            );
+//            $this->addFlash('success',
+//                'Votre réservation à bien été enregistré');
+
+
+            $pdf = $this->PDFService->generatePreContract($rental);
+
+            dd($pdf);
+
+
+//            return $this->redirectToRoute('home');
+
 
         }
 
@@ -240,7 +256,6 @@ class RentalController extends AbstractController
         ]);
 
     }
-
 
 
 }
