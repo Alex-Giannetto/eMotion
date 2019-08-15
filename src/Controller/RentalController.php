@@ -18,6 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -219,12 +220,14 @@ class RentalController extends AbstractController
 
 
         $form = $this->createFormBuilder()
+            ->add('city', null, [
+                'label' => 'lieux de la signature',
+                'required' => true,
+            ])
+            ->add('signature', HiddenType::class)
             ->add('cgl', CheckboxType::class, [
                 'label' => 'Je certifie accepter les conditions générales de location disponible à cette adresse',
                 'required' => true,
-            ])
-            ->add('send', SubmitType::class, [
-                'label' => 'Réserver',
             ])
             ->getForm();
 
@@ -232,7 +235,11 @@ class RentalController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->getData()['cgl']) {
 
-            $rental = $this->PDFService->generatePreContract($rental);
+            $city = $form->getData()['city'];
+            $signature = $form->getData()['signature'];
+
+            $rental = $this->PDFService->generateContract($rental, $city,
+                $signature);
 
             $this->addFlash('success',
                 'Votre réservation à bien été enregistré');

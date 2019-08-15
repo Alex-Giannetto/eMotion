@@ -72,13 +72,19 @@ class PDFService
     }
 
 
-    public function generatePreContract(Rental $rental): Rental
+    public function generateContract(
+        Rental $rental,
+        string $city,
+        string $signature
+    ): Rental
     {
         $pdfFilepath = $this->params->get('preContract_directory').'/'.uniqid().'.pdf';
 
         $template = $this->templating->render('pdf/contract.twig', [
             'rental' => $rental,
             'rentalService' => $this->rentalService,
+            'city' => $city,
+            'signature' => $signature,
         ]);
 
         $this->generatePDF($template, $pdfFilepath);

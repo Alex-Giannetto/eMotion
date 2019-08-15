@@ -69,6 +69,11 @@
             width: 100%;
             height: 1rem;
         }
+
+        .signature {
+            width: 300px;
+            height: 150px;
+        }
     </style>
 
 {% endblock %}
@@ -259,6 +264,12 @@
             quidem ratione repellendus, sapiente unde veritatis voluptates! Accusantium amet aperiam aspernatur, aut cum
             deserunt dignissimos eius ipsam libero natus neque officia possimus quas quidem quis temporibus vitae.</p>
     </div>
+
+    <h2>Signature</h2>
+    <p>Je certifie accepter les conditions générales de location disponible à cette adresse</p>
+    <p>Fait à {{ city }} le {{ 'now'|date('d/m/Y') }}</p>
+
+    <img src="{{ signature }}" class="signature">
 
 
 {% endblock %}
