@@ -1,0 +1,15 @@
+<div class="vehicleInfoComponent">
+    <h1>{{ vehicle.brand }}</h1>
+    <h3>{{ vehicle.model }}</h3>
+
+    <img src="{{ asset('assets/img/tesla-black.png') }}"
+         alt="image de la voiture"
+         class="mt-5">
+
+
+    <div class="jumbotron vehicleInfo p-4">
+        <p><b>Nombre de place :</b> 42</p> <!-- todo: ajouter nombre de place dans l'entitée -->
+        <p><b>Autonomie :</b> {{ vehicle.autonomy }} km</p>
+        <p><b>Climatisation :</b> oui</p> <!-- todo: ajouter boolean pour la climatisation -->
+    </div>
+</div>

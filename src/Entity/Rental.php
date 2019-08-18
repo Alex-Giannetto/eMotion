@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use DateTimeInterface;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -55,11 +55,16 @@ class Rental
     private $createdAt;
 
     /**
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $pdf = [];
+
+    /**
      * Rental constructor.
      */
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new DateTime();
     }
 
 
@@ -92,36 +97,36 @@ class Rental
         return $this;
     }
 
-    public function getStartRentalDate(): ?DateTimeInterface
+    public function getStartRentalDate(): ?DateTime
     {
         return $this->startRentalDate;
     }
 
-    public function setStartRentalDate(DateTimeInterface $startRentalDate): self
+    public function setStartRentalDate(DateTime $startRentalDate): self
     {
         $this->startRentalDate = $startRentalDate;
 
         return $this;
     }
 
-    public function getEstimatedReturnDate(): ?DateTimeInterface
+    public function getEstimatedReturnDate(): ?DateTime
     {
         return $this->estimatedReturnDate;
     }
 
-    public function setEstimatedReturnDate(DateTimeInterface $estimatedReturnDate): self
+    public function setEstimatedReturnDate(DateTime $estimatedReturnDate): self
     {
         $this->estimatedReturnDate = $estimatedReturnDate;
 
         return $this;
     }
 
-    public function getRealReturnDate(): ?DateTimeInterface
+    public function getRealReturnDate(): ?DateTime
     {
         return $this->realReturnDate;
     }
 
-    public function setRealReturnDate(DateTimeInterface $realReturnDate): self
+    public function setRealReturnDate(DateTime $realReturnDate): self
     {
         $this->realReturnDate = $realReturnDate;
 
@@ -140,15 +145,37 @@ class Rental
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTimeInterface
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    public function getEstimatedRentalDuration()
+    {
+        return $this->getStartRentalDate()->diff($this->getEstimatedReturnDate())->format("%a");
+    }
+
+    public function getPdf(): ?array
+    {
+        return $this->pdf;
+    }
+
+    public function setPdf(?array $pdf): self
+    {
+        $this->pdf = $pdf;
+
+        return $this;
+    }
+
+    public function addPdf(string $type, string $path)
+    {
+        $this->pdf[$type][] = [date('Y-m-d H:i:s') => $path];
     }
 }

@@ -18,12 +18,4 @@ class RentalRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Rental::class);
     }
-
-    // SELECT *
-    //FROM vehicle
-    //Where id not in (
-    //	SELECT vehicle_id
-    //	FROM rental
-    //	WHERE real_return_date is NULL
-    //)
 }
