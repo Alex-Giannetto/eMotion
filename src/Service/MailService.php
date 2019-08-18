@@ -10,6 +10,8 @@ use Twig\Environment as Templating;
 
 class MailService
 {
+    private $eMotionMail = ['reservation.emotion@gmail.com' => 'eMotion'];
+
     /**
      * @var Swift_Mailer
      */
@@ -54,9 +56,9 @@ class MailService
     public function prepareEmail(string $subject, array $to, string $body): Swift_Message
     {
         return (new Swift_Message())->setSubject($subject)
-            ->setFrom(['reservation.emotion@gmail.com' => 'eMotion'])
+            ->setFrom($this->eMotionMail)
             ->setTo($to)
-            ->setBcc(['reservation.emotion@gmail.com' => 'eMotion'])
+            ->setBcc($this->eMotionMail)
             ->setBody($body, 'text/html');
     }
 
@@ -76,7 +78,7 @@ class MailService
             );
         }
 
-        return $this->mailer->send($mail);
+        return $this->sendEmail($mail);
     }
 
 
@@ -98,7 +100,7 @@ class MailService
             ]
         );
 
-        $to = $rental->getClient()->getEmail();
+        $to = [$rental->getClient()->getEmail()];
 
         $mail = $this->prepareEmail($subject, $to, $body);
 
@@ -119,5 +121,27 @@ class MailService
         return $this->sendEmailWithAttachment($mail, $attachment);
     }
 
+    public function sendMailContact(string $firstname, string $lastname, $email, $message)
+    {
+        $subject = 'Demande de contact';
 
+        $body = $this->templating->render(
+            'emails/contact.html.twig',
+            [
+                'firstname' => $firstname,
+                'lastname' => $lastname,
+                'mail' => $email,
+                'message' => $message,
+            ]
+        );
+
+        $mail = $this->prepareEmail(
+            $subject,
+            array_merge([$email], $this->eMotionMail),
+            $body
+        );
+
+        return $this->sendEmail($mail);
+
+    }
 }
