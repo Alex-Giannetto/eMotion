@@ -63,12 +63,6 @@ class PDFService
 
         // Write file to the desired path
         file_put_contents($outputPath, $output);
-
-        // Output the generated PDF to Browser (inline view)
-//        $domPDF->stream($attachment, [
-//            "Attachment" => !!$attachment,
-//        ]);
-
     }
 
 
@@ -78,7 +72,8 @@ class PDFService
         string $signature
     ): Rental
     {
-        $pdfFilepath = $this->params->get('preContract_directory').'/'.uniqid().'.pdf';
+        $pdfFilepath = $this->params->get('preContract_directory').uniqid(
+            ).'.pdf';
 
         $template = $this->templating->render('pdf/contract.twig', [
             'rental' => $rental,
@@ -89,7 +84,7 @@ class PDFService
 
         $this->generatePDF($template, $pdfFilepath);
 
-        $rental->addPdf('Contract', $pdfFilepath);
+        $rental->addPdf('contract', $pdfFilepath);
 
         return $rental;
     }

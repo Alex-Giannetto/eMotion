@@ -87,7 +87,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/contact", name="contact")
      */
-    public function contact(Request $request, \Swift_Mailer $mailer)
+    public function contact(Request $request, \Swift_Mailer $mailer, MailService $mailService)
     {
         if (!empty($request->request->get('object'))) {
             $object = $request->request->get('object');
@@ -106,11 +106,16 @@ class DefaultController extends AbstractController
                 ['information' => $information]);
             $contentMailContact = $this->renderView('emails/mailContact.html.twig',
                 ['information' => $information]);
-            $emailService = new MailService();
-            $emailService->sendMail($mailer, 'Contact : '.$object, $adrMail,
+            $mailService->sendMail(
+                $mailer,
+                'Contact : '.$object,
+                $adrMail,
                 $adrMail, $contentMail);
-            $emailService->sendMail($mailer, 'Information demande : '.$object,
+            $mailService->sendMail(
+                $mailer,
+                'Information demande : '.$object,
                 $adrMail, $emailContact, $contentMailContact);
+
 
             return $this->render('default/validationMail.html.twig');
         } else {

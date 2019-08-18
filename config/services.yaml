@@ -30,3 +30,7 @@ services:
     PDF_service:
         class: App\Service\PDFService
         arguments: ['@twig']
+
+    Mail_service:
+      class: App\Service\MailService
+      arguments: ['@twig']

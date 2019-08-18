@@ -6,9 +6,8 @@ use App\Entity\CarDealer;
 use App\Entity\Rental;
 use App\Entity\Vehicle;
 use App\Entity\VehicleType;
-use App\Repository\CarDealerRepository;
 use App\Repository\VehicleRepository;
-use App\Repository\VehicleTypeRepository;
+use App\Service\MailService;
 use App\Service\PDFService;
 use App\Service\RentalService;
 use DateTime;
@@ -33,16 +32,22 @@ class RentalController extends AbstractController
      * @var RentalService
      */
     private $rentalService;
+    /**
+     * @var MailService
+     */
+    private $mailService;
 
     /**
      * RentalController constructor.
      */
     public function __construct(
         PDFService $PDFService,
-        RentalService $rentalService
+        RentalService $rentalService,
+        MailService $mailService
     ) {
         $this->PDFService = $PDFService;
         $this->rentalService = $rentalService;
+        $this->mailService = $mailService;
     }
 
 
@@ -57,9 +62,7 @@ class RentalController extends AbstractController
         CarDealer $carDealer,
         VehicleType $vehicleType,
         Request $request,
-        VehicleRepository $vehicleRepository,
-        VehicleTypeRepository $vehicleTypeRepository,
-        CarDealerRepository $carDealerRepository
+        VehicleRepository $vehicleRepository
     ) {
 
         $dateStart = DateTime::createFromFormat('Y-m-d', $dateStart);
@@ -139,9 +142,7 @@ class RentalController extends AbstractController
     public function overview(
         string $dateStart,
         string $dateEnd,
-        CarDealer $carDealer,
-        Vehicle $vehicle,
-        VehicleRepository $vehicleRepository
+        Vehicle $vehicle
     ) {
 
         $dateStart = DateTime::createFromFormat('Y-m-d', $dateStart);
@@ -188,9 +189,10 @@ class RentalController extends AbstractController
         string $dateEnd,
         Vehicle $vehicle,
         Request $request,
-        VehicleRepository $vehicleRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        MailService $mailService
     ) {
+
 
         $dateStart = DateTime::createFromFormat('Y-m-d', $dateStart);
         $dateEnd = DateTime::createFromFormat('Y-m-d', $dateEnd);
@@ -235,23 +237,27 @@ class RentalController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->getData()['cgl']) {
 
+            $entityManager->persist($rental);
+            $entityManager->flush();
+
             $city = $form->getData()['city'];
             $signature = $form->getData()['signature'];
 
             $rental = $this->PDFService->generateContract($rental, $city,
                 $signature);
 
-            $this->addFlash('success',
-                'Votre réservation à bien été enregistré');
-
+            $this->addFlash(
+                'success',
+                'Votre réservation à bien été enregistré. Vous retrouverez votre contrat par mail'
+            );
 
             $entityManager->persist($rental);
             $entityManager->flush();
 
+            $this->mailService->sendMailContrat($rental);
+
             return $this->redirectToRoute('home');
-
         }
-
 
         return $this->render('rental/book.html.twig', [
             'rental' => $rental,
@@ -259,6 +265,4 @@ class RentalController extends AbstractController
         ]);
 
     }
-
-
 }
