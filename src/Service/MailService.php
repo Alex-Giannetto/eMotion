@@ -30,22 +30,6 @@ class MailService
         $this->templating = $templating;
     }
 
-    /**
-     * ========================================================================
-     *                             OLD Function
-     * ========================================================================
-     */
-
-    public function sendMail(Swift_Mailer $mailer, $subject, $from, $to, $body)
-    {
-        $message = (new Swift_Message($subject))
-            ->setFrom($from)
-            ->setTo($to)
-            ->setBody($body, 'text/html');
-
-        $mailer->send($message);
-    }
-
 
     /**
      * ========================================================================
@@ -90,8 +74,7 @@ class MailService
 
     public function sendMailContrat(Rental $rental): bool
     {
-        $subject = 'Facture de votre réservation du '.$rental->getStartRentalDate(
-            )->format('d/m/Y');
+        $subject = 'Facture de votre réservation du '.$rental->getStartRentalDate()->format('d/m/Y');
 
         $body = $this->templating->render(
             'emails/contract.html.twig',
@@ -100,7 +83,10 @@ class MailService
             ]
         );
 
-        $to = [$rental->getClient()->getEmail()];
+        $to = [
+            $rental->getClient()->getEmail() => $rental->getClient()->getLastname().' '.$rental->getClient(
+                )->getFirstname(),
+        ];
 
         $mail = $this->prepareEmail($subject, $to, $body);
 
