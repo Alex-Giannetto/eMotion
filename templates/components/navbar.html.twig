@@ -28,16 +28,18 @@
                     <a class="nav-item nav-link" href='{{ path('contact') }}'>Contact</a>
                 </li>
 
-                {% if is_granted('ROLE_ADMIN') %}
+                {% if is_granted('ROLE_EMPLOYEE') %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Back Office
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ path('bo__user__list') }}">Users</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a class="dropdown-item" href="{{ path('bo__user__list') }}">Users</a>
+                                <div class="dropdown-divider"></div>
+                            {% endif %}
+                            <a class="dropdown-item" href="{{ path('bo__vehicle__list') }}">Vehicles</a>
                         </div>
                     </li>
                 {% endif %}

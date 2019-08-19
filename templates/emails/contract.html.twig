@@ -1,0 +1,9 @@
+<h1>Merci de nous avoir fait confiance</h1>
+
+<p>
+    Votre {{ rental.vehicle.brand }} {{ rental.vehicle.model }} vous attendra
+    le {{ rental.startRentalDate|date('d/m/Y') }} au concessionaire de {{ rental.vehicle.carDealer.name }}
+</p>
+
+<p>Adresse du concessionnaire : {{ rental.vehicle.carDealer.address }}
+    , {{ rental.vehicle.carDealer.city }} {{ rental.vehicle.carDealer.zipcode }} </p>

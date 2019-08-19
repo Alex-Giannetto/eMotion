@@ -1,0 +1,64 @@
+<div class="overwiewRentalInfoComponent">
+    <div class="jumbotron p-4">
+        <h2 class="mb-4">Récapitulatif</h2>
+
+
+        <div class="row">
+            <div class="col-12 info-group">
+                <p class="info-group__label">Adresse du concessionaire</p>
+                <p class="info-group__value">{{ carDealer.address }}</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6 info-group">
+                <p class="info-group__label">Début</p>
+                <p class="info-group__value">{{ rental.startRentalDate|date('d/m/Y') }}</p>
+            </div>
+            <div class="col-6 info-group">
+                <p class="info-group__label">Fin</p>
+                <p class="info-group__value">{{ rental.estimatedReturnDate|date('d/m/Y') }}</p>
+            </div>
+        </div>
+
+        {% if rental.client %}
+            <h2 class="mt-2 mb-4">Vous</h2>
+
+            <div class="row">
+                <div class="col-xl-6 info-group">
+                    <p class="info-group__label">Prénom</p>
+                    <p class="info-group__value">{{ rental.client.firstname }}</p>
+                </div>
+
+                <div class="col-xl-6 info-group">
+                    <p class="info-group__label">Nom</p>
+                    <p class="info-group__value">{{ rental.client.lastname }}</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 info-group">
+                    <p class="info-group__label">Adresse</p>
+                    <p class="info-group__value">{{ rental.client.address }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+
+        <div class="row">
+
+            <div class="col-xl-6 info-group">
+                <p class="info-group__label">Prix total</p>
+                <p class="info-group__value">{{ rentalService.getPriceWithPromotionForDate(rental.vehicle, rental.startRentalDate, rental.estimatedReturnDate) }}
+                    €</p>
+            </div>
+
+        </div>
+    </div>
+
+    <a href="{{ path('rental__book', {dateStart: rental.startRentalDate|date('Y-m-d'), dateEnd: rental.estimatedReturnDate|date('Y-m-d'), vehicle: rental.vehicle.id}) }}">
+        <button class="btn btn-block btn-primary">Réserver</button>
+    </a>
+
+
+</div>
