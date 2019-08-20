@@ -52,7 +52,19 @@
                         <a class="nav-item nav-link" href='{{ path('rental_list') }}'>Réservation</a>
                     </li>
                 {% endif %}
+                {% if is_granted('ROLE_USER') %}
+                    <li>
+                        <a class="nav-item nav-link" href='{{ path('logout') }}'>Déconnexion</a>
+                    </li>
+                {% else %}
 
+                    <li>
+                        <a class="nav-item nav-link" href='{{ path('register') }}'>S'enregistrer</a>
+                    </li>
+                    <li>
+                        <a class="nav-item nav-link" href='{{ path('login') }}'>Connexion</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
 
