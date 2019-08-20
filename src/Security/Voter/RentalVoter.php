@@ -6,6 +6,7 @@ namespace App\Security\Voter;
 
 use App\Entity\Rental;
 use App\Entity\User;
+use DateTime;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
@@ -75,7 +76,10 @@ class RentalVoter extends Voter
             case self::VIEW:
                 return $this->canView($user, $subject);
 
-            // DELETE : is just allowed for admin user but we already return true for any admin request above
+
+            case self::DELETE:
+                return $this->canDelete($user, $subject);
+
             default:
                 return false;
         }
@@ -85,5 +89,17 @@ class RentalVoter extends Voter
     private function canView(User $user, Rental $rental): bool
     {
         return $rental->getClient() === $user || $rental->getVehicle()->getCarDealer() === $user->getCarDealer();
+    }
+
+    private function canDelete(User $user, Rental $rental): bool
+    {
+        if ($this->security->isGranted('ROLE_EMPLOYEE')) {
+            return $rental->getVehicle()->getCarDealer() === $user->getCarDealer();
+        }
+
+
+        return $rental->getClient() === $user && $rental->getStartRentalDate() < new DateTime('now');
+
+
     }
 }

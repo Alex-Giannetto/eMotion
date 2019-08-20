@@ -353,7 +353,7 @@ class RentalController extends AbstractController
     }
 
     /**
-     * @Route("/rental/{id}", name="rental_pdf")
+     * @Route("/rental/download/{id}", name="rental_pdf")
      * @ParamConverter("rental", options={"id" = "id"})
      * @IsGranted("RENTAL_VIEW", subject="rental")
      */
@@ -374,5 +374,21 @@ class RentalController extends AbstractController
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
 
         return $response;
+    }
+
+
+    /**
+     * @Route("/rental/delete/{id}", name="rental_delete")
+     * @ParamConverter("rental", options={"id" = "id"})
+     * @IsGranted("RENTAL_DELETE", subject="rental")
+     */
+    public function deleteRental(Rental $rental, EntityManagerInterface $entityManager)
+    {
+
+        // todo : rembourser le client
+//        $entityManager->remove($rental);
+//        $entityManager->flush();
+//
+        return $this->redirectToRoute('rental_list');
     }
 }
