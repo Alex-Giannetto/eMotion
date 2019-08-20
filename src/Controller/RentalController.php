@@ -207,7 +207,7 @@ class RentalController extends AbstractController
         if (!$this->rentalService->rentalIsPossible($rental)) {
             $this->addFlash(
                 'danger',
-                'Le véhicle n\'est pas disponible aux dates renseignés '
+                'Le véhicle n\'est pas disponible aux dates renseignées '
             );
 
             return $this->redirectToRoute('home');
@@ -262,7 +262,7 @@ class RentalController extends AbstractController
         if (!$this->rentalService->rentalIsPossible($rental)) {
             $this->addFlash(
                 'danger',
-                'Le véhicle n\'est pas disponible aux dates renseignés'
+                'Le véhicle n\'est pas disponible aux dates renseignées'
             );
 
             return $this->redirectToRoute('home');
@@ -307,7 +307,7 @@ class RentalController extends AbstractController
 
             $this->addFlash(
                 'success',
-                'Votre réservation à bien été enregistré. Vous retrouverez votre contrat par mail'
+                'Votre réservation à bien été enregistrée. Vous retrouverez votre contrat par mail'
             );
 
             $entityManager->persist($rental);
