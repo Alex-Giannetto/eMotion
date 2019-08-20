@@ -93,6 +93,11 @@ class User implements UserInterface
     private $carDealer;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $point;
+
+    /**
      * User constructor.
      */
     public function __construct()
@@ -335,6 +340,18 @@ class User implements UserInterface
     public function setCarDealer(?CarDealer $carDealer): self
     {
         $this->carDealer = $carDealer;
+
+        return $this;
+    }
+
+    public function getPoint(): ?int
+    {
+        return $this->point ?? 0;
+    }
+
+    public function setPoint(?int $point): self
+    {
+        $this->point = $point;
 
         return $this;
     }

@@ -5,6 +5,7 @@ namespace App\Service;
 
 
 use App\Entity\Rental;
+use App\Entity\User;
 use App\Entity\Vehicle;
 use App\Repository\VehicleRepository;
 use DateTime;
@@ -68,7 +69,7 @@ class RentalService
         return round(array_sum($prices), 2);
     }
 
-    public function rentalIsPossible(Rental $rental): bool
+    public function rentalIsPosssible(Rental $rental): bool
     {
         return (
         in_array(
@@ -79,10 +80,48 @@ class RentalService
                 $rental->getStartRentalDate(),
                 $rental->getEstimatedReturnDate()
             )
-            )
+        )
         );
 
     }
 
+
+    public function addFidilityPointFromPrice(User $user, int $price): User
+    {
+        $user->setPoint($user->getPoint() + round($price));
+
+
+        return $user;
+    }
+
+    public function getPriceFinalPrice(Vehicle $vehicle, DateTime $start, DateTime $end, ?User $user): float
+    {
+        $promotedPrice = $this->getPriceWithPromotionForDate($vehicle, $start, $end);
+
+        if ($user) {
+            $pointInEuro = $user->getPoint() * 0.05;
+            $priceWithoutFidilityPoint = $promotedPrice - $pointInEuro;
+
+            if ($pointInEuro < 0) {
+                $user->
+            }
+
+            /**
+             * $pointPrix = fidelityPoint * 0.05
+             * $prixfidelity =  $pointPrix - $price;
+             *
+             * if ($prixfidelity < 0)
+             * user -> setPoint($pointPrix - $price * 0,05);
+             * return 0;
+             * else
+             * user -> setPoint(0);
+             * return $prixfidelity;
+             */
+        }
+
+        return $promotedPrice;
+
+
+    }
 
 }

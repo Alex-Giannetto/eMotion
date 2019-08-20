@@ -236,6 +236,7 @@ class RentalController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager
     ) {
+        $user = $this->getUser();
         $dateStart = DateTime::createFromFormat('Y-m-d', $dateStart);
         $dateEnd = DateTime::createFromFormat('Y-m-d', $dateEnd);
 
@@ -305,13 +306,17 @@ class RentalController extends AbstractController
                 $signature
             );
 
+            $user = $this->rentalService->addFidilityPointFromPrice($user, $rental->getPrice());
+            $entityManager->persist($user);
+
+            $entityManager->persist($rental);
+
+            $entityManager->flush();
+
             $this->addFlash(
                 'success',
                 'Votre réservation à bien été enregistrée. Vous retrouverez votre contrat par mail'
             );
-
-            $entityManager->persist($rental);
-            $entityManager->flush();
 
             $this->mailService->sendMailContrat($rental);
 
