@@ -27,6 +27,11 @@
                 <li>
                     <a class="nav-item nav-link" href='{{ path('contact') }}'>Contact</a>
                 </li>
+                {% if is_granted('ROLE_USER') %}
+                    <li>
+                        <a class="nav-item nav-link" href='{{ path('user__myAccount') }}'>Profil</a>
+                    </li>
+                {% endif %}
 
                 {% if is_granted('ROLE_EMPLOYEE') %}
                     <li class="nav-item dropdown">
