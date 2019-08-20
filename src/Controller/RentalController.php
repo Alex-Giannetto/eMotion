@@ -6,6 +6,7 @@ use App\Entity\CarDealer;
 use App\Entity\Rental;
 use App\Entity\Vehicle;
 use App\Entity\VehicleType;
+use App\Repository\RentalRepository;
 use App\Repository\VehicleRepository;
 use App\Service\MailService;
 use App\Service\PDFService;
@@ -19,8 +20,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
+
 
 class RentalController extends AbstractController
 {
@@ -64,54 +68,80 @@ class RentalController extends AbstractController
         Request $request,
         VehicleRepository $vehicleRepository
     ) {
-
         $dateStart = DateTime::createFromFormat('Y-m-d', $dateStart);
         $dateEnd = DateTime::createFromFormat('Y-m-d', $dateEnd);
 
 
         $form = $this->createFormBuilder()
-            ->add('location', EntityType::class, [
-                'class' => CarDealer::class,
-                'choice_label' => 'name',
-                'required' => true,
-                'label' => 'Lieux',
-                'data' => $carDealer,
-            ])
-            ->add('start', null, [
-                'attr' => ['class' => 'js-datepicker'],
-                'required' => true,
-                'label' => 'Début',
-                'data' => $dateStart->format('d/m/Y'),
-            ])
-            ->add('end', null, [
-                'attr' => ['class' => 'js-datepicker'],
-                'required' => true,
-                'label' => 'Fin',
-                'data' => $dateEnd->format('d/m/Y'),
-            ])
-            ->add('type', EntityType::class, [
-                'class' => VehicleType::class,
-                'choice_label' => 'label',
-                'required' => true,
-                'label' => 'Type',
-                'data' => $vehicleType,
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Chercher',
-            ])
+            ->add(
+                'location',
+                EntityType::class,
+                [
+                    'class' => CarDealer::class,
+                    'choice_label' => 'name',
+                    'required' => true,
+                    'label' => 'Lieux',
+                    'data' => $carDealer,
+                ]
+            )
+            ->add(
+                'start',
+                null,
+                [
+                    'attr' => ['class' => 'js-datepicker'],
+                    'required' => true,
+                    'label' => 'Début',
+                    'data' => $dateStart->format('d/m/Y'),
+                ]
+            )
+            ->add(
+                'end',
+                null,
+                [
+                    'attr' => ['class' => 'js-datepicker'],
+                    'required' => true,
+                    'label' => 'Fin',
+                    'data' => $dateEnd->format('d/m/Y'),
+                ]
+            )
+            ->add(
+                'type',
+                EntityType::class,
+                [
+                    'class' => VehicleType::class,
+                    'choice_label' => 'label',
+                    'required' => true,
+                    'label' => 'Type',
+                    'data' => $vehicleType,
+                ]
+            )
+            ->add(
+                'submit',
+                SubmitType::class,
+                [
+                    'label' => 'Chercher',
+                ]
+            )
             ->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            return $this->redirectToRoute('rental__search', [
-                'carDealer' => $form->getData()['location']->getId(),
-                'dateStart' => DateTime::createFromFormat('d/m/Y',
-                    $form->getData()['start'])->format('Y-m-d'),
-                'dateEnd' => DateTime::createFromFormat('d/m/Y',
-                    $form->getData()['end'])->format('Y-m-d'),
-                'vehicleType' => $form->getData()['type']->getId(),
-            ]);
+            return $this->redirectToRoute(
+                'rental__search',
+                [
+                    'carDealer' => $form->getData()['location']->getId(),
+                    'dateStart' => DateTime::createFromFormat(
+                        'd/m/Y',
+                        $form->getData()['start']
+                    )->format('Y-m-d'),
+                    'dateEnd' => DateTime::createFromFormat(
+                        'd/m/Y',
+                        $form->getData()['end']
+                    )->format('Y-m-d'),
+                    'vehicleType' => $form->getData()['type']->getId(),
+                ]
+            );
         }
 
 
@@ -121,16 +151,23 @@ class RentalController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
-        $vehicles = $vehicleRepository->getAvailableVehicles($vehicleType->getId(),
-            $carDealer->getId(), $dateStart, $dateEnd);
+        $vehicles = $vehicleRepository->getAvailableVehicles(
+            $vehicleType->getId(),
+            $carDealer->getId(),
+            $dateStart,
+            $dateEnd
+        );
 
-        return $this->render('rental/index.html.twig', [
-            'form' => $form->createView(),
-            'dateStart' => $dateStart,
-            'dateEnd' => $dateEnd,
-            'vehicles' => $vehicles,
-            'rentalService' => $this->rentalService,
-        ]);
+        return $this->render(
+            'rental/index.html.twig',
+            [
+                'form' => $form->createView(),
+                'dateStart' => $dateStart,
+                'dateEnd' => $dateEnd,
+                'vehicles' => $vehicles,
+                'rentalService' => $this->rentalService,
+            ]
+        );
     }
 
 
@@ -144,7 +181,6 @@ class RentalController extends AbstractController
         string $dateEnd,
         Vehicle $vehicle
     ) {
-
         $dateStart = DateTime::createFromFormat('Y-m-d', $dateStart);
         $dateEnd = DateTime::createFromFormat('Y-m-d', $dateEnd);
 
@@ -159,22 +195,31 @@ class RentalController extends AbstractController
         $rental->setVehicle($vehicle);
         $rental->setStartRentalDate($dateStart);
         $rental->setEstimatedReturnDate($dateEnd);
-        $rental->setPrice($this->rentalService->getPriceForDate($vehicle,
-            $dateStart,
-            $dateEnd));
+        $rental->setPrice(
+            $this->rentalService->getPriceForDate(
+                $vehicle,
+                $dateStart,
+                $dateEnd
+            )
+        );
 
 
         if (!$this->rentalService->rentalIsPossible($rental)) {
-            $this->addFlash('danger',
-                'Le véhicle n\'est pas disponible aux dates renseignés ');
+            $this->addFlash(
+                'danger',
+                'Le véhicle n\'est pas disponible aux dates renseignés '
+            );
 
             return $this->redirectToRoute('home');
         }
 
-        return $this->render('rental/overview.html.twig', [
-            'rental' => $rental,
-            'rentalService' => $this->rentalService,
-        ]);
+        return $this->render(
+            'rental/overview.html.twig',
+            [
+                'rental' => $rental,
+                'rentalService' => $this->rentalService,
+            ]
+        );
 
     }
 
@@ -189,11 +234,8 @@ class RentalController extends AbstractController
         string $dateEnd,
         Vehicle $vehicle,
         Request $request,
-        EntityManagerInterface $entityManager,
-        MailService $mailService
+        EntityManagerInterface $entityManager
     ) {
-
-
         $dateStart = DateTime::createFromFormat('Y-m-d', $dateStart);
         $dateEnd = DateTime::createFromFormat('Y-m-d', $dateEnd);
 
@@ -208,29 +250,43 @@ class RentalController extends AbstractController
         $rental->setVehicle($vehicle);
         $rental->setStartRentalDate($dateStart);
         $rental->setEstimatedReturnDate($dateEnd);
-        $rental->setPrice($this->rentalService->getPriceWithPromotionForDate($vehicle,
-            $dateStart,
-            $dateEnd));
+        $rental->setPrice(
+            $this->rentalService->getPriceWithPromotionForDate(
+                $vehicle,
+                $dateStart,
+                $dateEnd
+            )
+        );
 
 
         if (!$this->rentalService->rentalIsPossible($rental)) {
-            $this->addFlash('danger',
-                'Le véhicle n\'est pas disponible aux dates renseignés');
+            $this->addFlash(
+                'danger',
+                'Le véhicle n\'est pas disponible aux dates renseignés'
+            );
 
             return $this->redirectToRoute('home');
         }
 
 
         $form = $this->createFormBuilder()
-            ->add('city', null, [
-                'label' => 'lieux de la signature',
-                'required' => true,
-            ])
+            ->add(
+                'city',
+                null,
+                [
+                    'label' => 'lieux de la signature',
+                    'required' => true,
+                ]
+            )
             ->add('signature', HiddenType::class)
-            ->add('cgl', CheckboxType::class, [
-                'label' => 'Je certifie accepter les conditions générales de location disponible à cette adresse',
-                'required' => true,
-            ])
+            ->add(
+                'cgl',
+                CheckboxType::class,
+                [
+                    'label' => 'Je certifie accepter les conditions générales de location disponible à cette adresse',
+                    'required' => true,
+                ]
+            )
             ->getForm();
 
 
@@ -243,8 +299,11 @@ class RentalController extends AbstractController
             $city = $form->getData()['city'];
             $signature = $form->getData()['signature'];
 
-            $rental = $this->PDFService->generateContract($rental, $city,
-                $signature);
+            $rental = $this->PDFService->generateContract(
+                $rental,
+                $city,
+                $signature
+            );
 
             $this->addFlash(
                 'success',
@@ -259,10 +318,65 @@ class RentalController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
-        return $this->render('rental/book.html.twig', [
-            'rental' => $rental,
-            'form' => $form->createView(),
-        ]);
+        return $this->render(
+            'rental/book.html.twig',
+            [
+                'rental' => $rental,
+                'form' => $form->createView(),
+            ]
+        );
+
+    }
+
+    /**
+     * @Route("/rental", name="rental_list")
+     * @IsGranted("ROLE_USER")
+     */
+    public function listRentals(RentalRepository $rentalRepository)
+    {
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $rentals = $rentalRepository->findAll();
+        } else {
+            if ($this->isGranted('ROLE_EMPLOYEE')) {
+                $rentals = $rentalRepository->findBy(['carDealer' => $this->getUser()->getCarDealer()->getId()]);
+            } else {
+                $rentals = $rentalRepository->findBy(['client' => $this->getUser()->getId()]);
+            }
+        }
+
+        return $this->render(
+            'rental/list.html.twig',
+            [
+                'rentals' => $rentals,
+            ]
+        );
+    }
+
+    /**
+     * @Route("/rental/{id}", name="rental_pdf")
+     * @ParamConverter("rental", options={"id" = "id"})
+     * @IsGranted("RENTAL_VIEW", subject="rental")
+     */
+    public function downloadRentalPDF(Rental $rental)
+    {
+        // todo : refractor this line !
+        $pdfs = $rental->getPdf();
+
+        if (!empty($pdfs['invoice'])) {
+            $invoices = $pdfs['invoice'];
+            $invoiceLabels = array_keys($invoices);
+            $pdf = $invoices[$invoiceLabels[count($invoiceLabels) - 1]];
+        } else {
+            $contracts = $pdfs['contract'];
+            $contractLabels = '';
+        }
+
+        $pdf = $rental->getPdf()['contract'][0][array_keys($rental->getPdf()['contract'][0])[0]];
+        $response = new BinaryFileResponse($pdf);
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+
+        return $response;
+
 
     }
 }
