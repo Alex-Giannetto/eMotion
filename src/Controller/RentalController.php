@@ -364,19 +364,15 @@ class RentalController extends AbstractController
 
         if (!empty($pdfs['invoice'])) {
             $invoices = $pdfs['invoice'];
-            $invoiceLabels = array_keys($invoices);
-            $pdf = $invoices[$invoiceLabels[count($invoiceLabels) - 1]];
+            $pdf = $invoices[count($invoices) - 1];
         } else {
             $contracts = $pdfs['contract'];
-            $contractLabels = '';
+            $pdf = $contracts[count($contracts) - 1];
         }
 
-        $pdf = $rental->getPdf()['contract'][0][array_keys($rental->getPdf()['contract'][0])[0]];
         $response = new BinaryFileResponse($pdf);
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
 
         return $response;
-
-
     }
 }

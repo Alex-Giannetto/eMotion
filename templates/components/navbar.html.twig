@@ -46,7 +46,13 @@
 
                         </div>
                     </li>
+
+                {% else %}
+                    <li>
+                        <a class="nav-item nav-link" href='{{ path('rental_list') }}'>Réservation</a>
+                    </li>
                 {% endif %}
+
             </ul>
         </div>
 

@@ -74,7 +74,7 @@ class PDFService
         $pdfFilepath = $this->params->get('contract_directory').uniqid().'.pdf';
 
         $template = $this->templating->render(
-            'emails/contract.html.twig',
+            'pdf/contract.html.twig',
             [
                 'rental' => $rental,
                 'rentalService' => $this->rentalService,
