@@ -44,13 +44,19 @@
                     </li>
                 {% endif %}
 
-                <li>
                 {% if is_granted('ROLE_USER') %}
-                    <a class="nav-item nav-link" href='{{ path('logout') }}'>Déconnexion</a>
+                    <li>
+                        <a class="nav-item nav-link" href='{{ path('logout') }}'>Déconnexion</a>
+                    </li>
                 {% else %}
-                    <a class="nav-item nav-link" href='{{ path('login') }}'>Connexion</a>
+
+                    <li>
+                        <a class="nav-item nav-link" href='{{ path('register') }}'>S'enregistrer</a>
+                    </li>
+                    <li>
+                        <a class="nav-item nav-link" href='{{ path('login') }}'>Connexion</a>
+                    </li>
                 {% endif %}
-                </li>
             </ul>
         </div>
 
