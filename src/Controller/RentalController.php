@@ -274,7 +274,7 @@ class RentalController extends AbstractController
                 'city',
                 null,
                 [
-                    'label' => 'lieux de la signature',
+                    'label' => 'lieu de la signature',
                     'required' => true,
                 ]
             )
