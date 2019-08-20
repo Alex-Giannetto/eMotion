@@ -176,6 +176,6 @@ class Rental
 
     public function addPdf(string $type, string $path)
     {
-        $this->pdf[$type][] = [date('Y-m-d H:i:s') => $path];
+        $this->pdf[$type][] = $path;
     }
 }

@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <table class="table table-striped text-center" id="rentalList">
+            <thead>
+            <tr>
+                <th class="text-center">ID</th>
+                <th class="text-center">Concessionaire</th>
+                <th class="text-center">Vehicule</th>
+                <th class="text-center">Début</th>
+                <th class="text-center">Fin</th>
+                <th class="text-center">Prix</th>
+                <th class="text-center">PDF</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for rental in rentals %}
+                <tr>
+                    <td>{{ rental.id }}</td>
+                    <td>{{ rental.vehicle.carDealer.name }}</td>
+                    <td>{{ rental.vehicle.brand ~ ' ' ~ rental.vehicle.model }}</td>
+                    <td>{{ rental.startRentalDate|date('d/m/Y') }}</td>
+                    <td>{{ rental.estimatedReturnDate|date('d/m/Y') }}</td>
+                    <td>{{ rental.price }} €</td>
+                    <td>
+                        <a href="{{ path("rental_pdf", {id: rental.id}) }}">
+                            <ion-icon name="download"></ion-icon>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+      $(document).ready(function () {
+        $('#rentalList').DataTable()
+        $('.dataTables_length').addClass('bs-select')
+      })
+    </script>
+{% endblock %}
