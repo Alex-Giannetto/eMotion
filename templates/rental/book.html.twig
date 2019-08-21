@@ -70,6 +70,7 @@
     <script src="https://js.stripe.com/v2/"></script>
 
     <script>
+
       const canvas = document.getElementById('signature-pad')
       const input = document.getElementById('form_signature')
 
@@ -104,19 +105,23 @@
 
         $form.find('#send').attr('disabled', true)
 
-        Stripe.card.createToken($form, function (status, response) {
+        if (document.getElementById('form_stripeToken') !== null) {
 
-          $form.find('.payementError').remove()
-          if (response.error) {
-            $form.append('<div class="alert alert-danger payementError">' + response.error.message + '</div>')
-          } else {
-            const token = response.id
+          Stripe.card.createToken($form, function (status, response) {
 
-            $('#form_stripeToken').val(token)
+            $form.find('.payementError').remove()
+            if (response.error) {
+              $form.append('<div class="alert alert-danger payementError">' + response.error.message + '</div>')
+            } else {
+              const token = response.id
 
-            $form.get(0).submit()
-          }
-        })
+              $('#form_stripeToken').val(token)
+
+            }
+          })
+        }
+
+        $form.get(0).submit()
       })
 
     </script>
