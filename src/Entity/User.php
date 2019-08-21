@@ -98,6 +98,10 @@ class User implements UserInterface
     private $point;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $stripeToken;
+    /**
      * User constructor.
      */
     public function __construct()
@@ -352,6 +356,17 @@ class User implements UserInterface
     public function setPoint(?int $point): self
     {
         $this->point = $point;
+
+        return $this;
+    }
+    public function getStripeToken(): ?string
+    {
+        return $this->stripeToken;
+    }
+
+    public function setStripeToken(?string $stripeToken): self
+    {
+        $this->stripeToken = $stripeToken;
 
         return $this;
     }
