@@ -70,7 +70,7 @@ class RentalController extends AbstractController
     ) {
         $dateStart = DateTime::createFromFormat('Y-m-d', $dateStart);
         $dateEnd = DateTime::createFromFormat('Y-m-d', $dateEnd);
-
+        $dateActual = DateTime::createFromFormat('Y-m-d' , date('Y-m-d'));
 
         $form = $this->createFormBuilder()
             ->add(
@@ -143,9 +143,12 @@ class RentalController extends AbstractController
                 ]
             );
         }
+        if ($dateStart < $dateActual || $dateEnd < $dateActual) {
+            $this->addFlash('danger', 'Les dates sont inférieures à la date d\'aujourd\'hui');
+            return $this->redirectToRoute('home');
+        }
 
-
-        if (!$dateStart || !$dateEnd) {
+        if (!$dateStart || !$dateEnd || ($dateStart > $dateEnd)) {
             $this->addFlash('danger', 'Veuillez renseigner des dates valides');
 
             return $this->redirectToRoute('home');
@@ -183,10 +186,14 @@ class RentalController extends AbstractController
     ) {
         $dateStart = DateTime::createFromFormat('Y-m-d', $dateStart);
         $dateEnd = DateTime::createFromFormat('Y-m-d', $dateEnd);
+        $dateActual = DateTime::createFromFormat('Y-m-d' , date('Y-m-d'));
 
-        if (!$dateStart && !$dateEnd && ($dateStart > $dateEnd)) {
+        if (!$dateStart && !$dateEnd || ($dateStart > $dateEnd)) {
             $this->addFlash('danger', 'dates sont incorrectes');
-
+            return $this->redirectToRoute('home');
+        }
+        if ($dateStart < $dateActual || $dateEnd < $dateActual) {
+            $this->addFlash('danger', 'Les dates sont inférieures à la date d\'aujourd\'hui');
             return $this->redirectToRoute('home');
         }
 
@@ -238,10 +245,13 @@ class RentalController extends AbstractController
     ) {
         $dateStart = DateTime::createFromFormat('Y-m-d', $dateStart);
         $dateEnd = DateTime::createFromFormat('Y-m-d', $dateEnd);
-
-        if (!$dateStart && !$dateEnd && ($dateStart > $dateEnd)) {
+        $dateActual = DateTime::createFromFormat('Y-m-d' , date('Y-m-d'));
+        if (!$dateStart && !$dateEnd || ($dateStart > $dateEnd)) {
             $this->addFlash('danger', 'dates sont incorrectes');
-
+            return $this->redirectToRoute('home');
+        }
+        if ($dateStart < $dateActual || $dateEnd < $dateActual) {
+            $this->addFlash('danger', 'Les dates sont inférieures à la date d\'aujourd\'hui');
             return $this->redirectToRoute('home');
         }
 
