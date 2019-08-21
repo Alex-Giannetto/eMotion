@@ -9,6 +9,7 @@ use App\Entity\VehicleType;
 use App\Repository\RentalRepository;
 use App\Repository\VehicleRepository;
 use App\Service\MailService;
+use App\Service\PaymentService;
 use App\Service\PDFService;
 use App\Service\RentalService;
 use DateTime;
@@ -234,8 +235,11 @@ class RentalController extends AbstractController
         string $dateEnd,
         Vehicle $vehicle,
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        PaymentService $paymentService
     ) {
+        $user = $this->getUser();
+
         $dateStart = DateTime::createFromFormat('Y-m-d', $dateStart);
         $dateEnd = DateTime::createFromFormat('Y-m-d', $dateEnd);
 
@@ -286,36 +290,67 @@ class RentalController extends AbstractController
                     'label' => 'Je certifie accepter les conditions générales de location disponible à cette adresse',
                     'required' => true,
                 ]
-            )
-            ->getForm();
+            );
+
+        if (!$user->getStripeToken()) {
+            $form->add(
+                'stripeToken',
+                HiddenType::class,
+                [
+                    'attr' => ['id' => 'stripeToken'],
+                ]
+            );
+        }
+
+        $form = $form->getForm();
 
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->getData()['cgl']) {
 
-            $entityManager->persist($rental);
-            $entityManager->flush();
 
-            $city = $form->getData()['city'];
-            $signature = $form->getData()['signature'];
+            if (!$user->getStripeToken()) {
+                $stripeToken = $form->getData()['stripeToken'];
 
-            $rental = $this->PDFService->generateContract(
-                $rental,
-                $city,
-                $signature
-            );
+                $user = $paymentService->createClient($user, $stripeToken);
+                $entityManager->persist($user);
+                $entityManager->flush();
+            }
 
-            $this->addFlash(
-                'success',
-                'Votre réservation à bien été enregistrée. Vous retrouverez votre contrat par mail'
-            );
 
-            $entityManager->persist($rental);
-            $entityManager->flush();
+            $clientToken = $user->getStripeToken();
 
-            $this->mailService->sendMailContrat($rental);
+            if ($paymentService->chargeClient($user, $rental->getPrice())) {
+                $entityManager->persist($rental);
+                $entityManager->flush();
+
+                $city = $form->getData()['city'];
+                $signature = $form->getData()['signature'];
+
+                $rental = $this->PDFService->generateContract(
+                    $rental,
+                    $city,
+                    $signature
+                );
+
+                $this->addFlash(
+                    'success',
+                    'Votre réservation à bien été enregistrée. Vous retrouverez votre contrat par mail'
+                );
+
+                $entityManager->persist($rental);
+                $entityManager->flush();
+
+                $this->mailService->sendMailContrat($rental);
+
+                return $this->redirectToRoute('home');
+            } else {
+                $this->addFlash('danger', 'Le paiement à échoué, veuillez réessayer.');
+            }
 
             return $this->redirectToRoute('home');
+
+
         }
 
         return $this->render(
@@ -332,8 +367,10 @@ class RentalController extends AbstractController
      * @Route("/rental", name="rental_list")
      * @IsGranted("ROLE_USER")
      */
-    public function listRentals(RentalRepository $rentalRepository)
-    {
+    public
+    function listRentals(
+        RentalRepository $rentalRepository
+    ) {
         if ($this->isGranted('ROLE_ADMIN')) {
             $rentals = $rentalRepository->findAll();
         } else {
@@ -357,8 +394,10 @@ class RentalController extends AbstractController
      * @ParamConverter("rental", options={"id" = "id"})
      * @IsGranted("RENTAL_VIEW", subject="rental")
      */
-    public function downloadRentalPDF(Rental $rental)
-    {
+    public
+    function downloadRentalPDF(
+        Rental $rental
+    ) {
         // todo : refractor this line !
         $pdfs = $rental->getPdf();
 
@@ -382,8 +421,10 @@ class RentalController extends AbstractController
      * @ParamConverter("rental", options={"id" = "id"})
      * @IsGranted("RENTAL_DELETE", subject="rental")
      */
-    public function deleteRental(Rental $rental, EntityManagerInterface $entityManager)
-    {
+    public
+    function deleteRental(
+        Rental $rental, EntityManagerInterface $entityManager
+    ) {
 
         // todo : rembourser le client
 //        $entityManager->remove($rental);
