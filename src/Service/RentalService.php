@@ -69,7 +69,7 @@ class RentalService
         return round(array_sum($prices), 2);
     }
 
-    public function rentalIsPosssible(Rental $rental): bool
+    public function rentalIsPossible(Rental $rental): bool
     {
         return (
         in_array(
@@ -100,23 +100,10 @@ class RentalService
 
         if ($user) {
             $pointInEuro = $user->getPoint() * 0.05;
-            $priceWithoutFidilityPoint = $promotedPrice - $pointInEuro;
 
-            if ($pointInEuro < 0) {
-                $user->
-            }
+            $finalPrice = $promotedPrice - $pointInEuro;
 
-            /**
-             * $pointPrix = fidelityPoint * 0.05
-             * $prixfidelity =  $pointPrix - $price;
-             *
-             * if ($prixfidelity < 0)
-             * user -> setPoint($pointPrix - $price * 0,05);
-             * return 0;
-             * else
-             * user -> setPoint(0);
-             * return $prixfidelity;
-             */
+            return $finalPrice > 0 ? $finalPrice : 0;
         }
 
         return $promotedPrice;

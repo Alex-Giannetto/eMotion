@@ -24,7 +24,7 @@
 
         <div class="price">
             <span class="price__old">{{ rentalService.getPriceForDate(vehicle, dateStart, dateEnd) }}€</span>
-            <span class="price__current">{{ rentalService.getPriceWithPromotionForDate(vehicle, dateStart, dateEnd) }}€</span>
+            <span class="price__current">{{ rentalService.getPriceFinalPrice(vehicle, dateStart, dateEnd, app.user) }}€</span>
             {#            <span class="price__byDay">/jour</span>#}
         </div>
 
