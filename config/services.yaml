@@ -6,6 +6,8 @@
 parameters:
     contract_directory: '%kernel.project_dir%/output/PDF/contract/'
 
+    privateStripeToken: 'sk_test_cCPfA83OoSRopl29OnGflTt000OOZIVthX'
+
 services:
     # default configuration for services in *this* file
     _defaults:
