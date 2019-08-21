@@ -332,13 +332,13 @@ class RentalController extends AbstractController
      * @Route("/rental", name="rental_list")
      * @IsGranted("ROLE_USER")
      */
-    public function listRentals(RentalRepository $rentalRepository)
+    public function listRentals(RentalRepository $rentalRepository, VehicleRepository $vehicleRepository)
     {
         if ($this->isGranted('ROLE_ADMIN')) {
             $rentals = $rentalRepository->findAll();
         } else {
             if ($this->isGranted('ROLE_EMPLOYEE')) {
-                $rentals = $rentalRepository->findBy(['carDealer' => $this->getUser()->getCarDealer()->getId()]);
+                $rentals = $rentalRepository->findBy(['vehicle' => $vehicleRepository->findBy(['carDealer' => $this->getUser()->getCarDealer()->getId()])]);
             } else {
                 $rentals = $rentalRepository->findBy(['client' => $this->getUser()->getId()]);
             }
