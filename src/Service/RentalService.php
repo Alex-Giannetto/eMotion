@@ -47,7 +47,7 @@ class RentalService
         Vehicle $vehicle,
         DateTime $start,
         DateTime $end
-    ) {
+    ): float {
 
         $dayCount = $start->diff($end)->format("%a");
 
@@ -90,7 +90,6 @@ class RentalService
     {
         $user->setPoint($user->getPoint() + round($price));
 
-
         return $user;
     }
 
@@ -107,8 +106,25 @@ class RentalService
         }
 
         return $promotedPrice;
+    }
 
+    public function removeUserFidilityPointFromPrice(User $user, Rental $rental): User
+    {
 
+        $priceWithoutPoints = $this->getPriceWithPromotionForDate(
+            $rental->getVehicle(),
+            $rental->getStartRentalDate(),
+            $rental->getEstimatedReturnDate(),
+            );
+
+        $diff = $priceWithoutPoints - $rental->getPrice();
+
+        $nbPoints = $diff / 0.05;
+
+        $userPoints = $user->getPoint() - $nbPoints;
+        $user->setPoint($userPoints > 0 ? $userPoints : 0);
+
+        return $user;
     }
 
 }

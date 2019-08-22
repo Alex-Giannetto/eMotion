@@ -42,7 +42,6 @@ class PDFService
     {
         // Configure Dompdf according to your needs
         $pdfOptions = new Options();
-        $pdfOptions->set('defaultFont', 'Arial');
         $pdfOptions->set('isHtml5ParserEnabled', 'true');
         $pdfOptions->set('defaultFont', 'sans-serif');
         $pdfOptions->set('isRemoteEnabled', true);
