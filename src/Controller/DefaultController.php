@@ -178,7 +178,7 @@ class DefaultController extends AbstractController
 
         $form->handleRequest($request);
 
-        if (!$form->isSubmitted() && $form->isValid()) {
+        if ($form->isValid() && !$form->isSubmitted()) {
             return $this->render(
                 'default/contact.html.twig',
                 [
