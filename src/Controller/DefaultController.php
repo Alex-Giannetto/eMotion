@@ -123,7 +123,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/contact", name="contact")
      */
-    public function contact(Request $request, \Swift_Mailer $mailer, MailService $mailService)
+    public function contact(Request $request, MailService $mailService)
     {
         $form = $this->createFormBuilder()
             ->add(

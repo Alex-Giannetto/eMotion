@@ -42,7 +42,6 @@ class PDFService
     {
         // Configure Dompdf according to your needs
         $pdfOptions = new Options();
-        $pdfOptions->set('defaultFont', 'Arial');
         $pdfOptions->set('isHtml5ParserEnabled', 'true');
         $pdfOptions->set('defaultFont', 'sans-serif');
         $pdfOptions->set('isRemoteEnabled', true);
@@ -70,17 +69,18 @@ class PDFService
         Rental $rental,
         string $city,
         string $signature
-    ): Rental
-    {
-        $pdfFilepath = $this->params->get('preContract_directory').uniqid(
-            ).'.pdf';
+    ): Rental {
+        $pdfFilepath = $this->params->get('contract_directory').uniqid().'.pdf';
 
-        $template = $this->templating->render('pdf/contract.twig', [
-            'rental' => $rental,
-            'rentalService' => $this->rentalService,
-            'city' => $city,
-            'signature' => $signature,
-        ]);
+        $template = $this->templating->render(
+            'pdf/contract.html.twig',
+            [
+                'rental' => $rental,
+                'rentalService' => $this->rentalService,
+                'city' => $city,
+                'signature' => $signature,
+            ]
+        );
 
         $this->generatePDF($template, $pdfFilepath);
 

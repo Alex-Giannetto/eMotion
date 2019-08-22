@@ -194,9 +194,16 @@
                 <td class="text-center"></td>
             </tr>
             <tr>
+                <td>Remise fidélité</td>
+                <td class="text-center">{{ rentalService.getPriceWithPromotion(rental.vehicle, rental.getEstimatedRentalDuration) - rentalService.getPriceFinalPrice(rental.vehicle, rental.startRentalDate, rental.estimatedReturnDate, rental.client) }}
+                    €
+                </td>
+                <td class="text-center"></td>
+            </tr>
+            <tr>
                 <td class="text-right"><b>Total à payer</b></td>
                 <td colspan="2"
-                    class="text-center">{{ rentalService.getPriceWithPromotion(rental.vehicle, rental.getEstimatedRentalDuration) }}
+                    class="text-center">{{ rentalService.getPriceFinalPrice(rental.vehicle, rental.startRentalDate, rental.estimatedReturnDate, rental.client) }}
                     €
                 </td>
             </tr>

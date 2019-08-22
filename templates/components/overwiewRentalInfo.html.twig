@@ -49,7 +49,7 @@
 
             <div class="col-xl-6 info-group">
                 <p class="info-group__label">Prix total</p>
-                <p class="info-group__value">{{ rentalService.getPriceWithPromotionForDate(rental.vehicle, rental.startRentalDate, rental.estimatedReturnDate) }}
+                <p class="info-group__value">{{ rentalService.getPriceFinalPrice(rental.vehicle, rental.startRentalDate, rental.estimatedReturnDate, app.user) }}
                     €</p>
             </div>
 

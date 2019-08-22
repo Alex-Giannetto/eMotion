@@ -18,18 +18,46 @@
                 </div>
             </div>
             <div>
-                {{ form_start(form) }}
+                {{ form_start(form, {'attr': {'id': 'form'}}) }}
                 {{ form_widget(form) }}
-
-
                 <br>
-                <div class="text-center">
-                    <button class="btn btn-outline-primary" id="clear">Effacer</button>
-                    <button class="btn btn-primary" id="save-svg">Réserver</button>
-                </div>
+
+                {% if not app.user.stripeToken %}
+                    <div class="form-group">
+                        <label>
+                            Numéro de carte bleu
+                            <input type="text" class="form-control" data-stripe="number" value="5555555555554444">
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            MM
+                            <input type="text" class="form-control" data-stripe="exp_month" value="02">
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            YY
+                            <input type="text" class="form-control" data-stripe="exp_year" value="22">
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            CVC
+                            <input type="text" class="form-control" data-stripe="cvc" value="222">
+                        </label>
+                    </div>
+                {% endif %}
 
             </div>
 
+            <div class="text-center">
+                <button class="btn btn-outline-primary" id="clear">Effacer</button>
+                <button class="btn btn-primary" id="send">Réserver</button>
+            </div>
             {{ form_end(form) }}
         </div>
     </div>
@@ -39,8 +67,10 @@
     {{ parent() }}
 
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
+    <script src="https://js.stripe.com/v2/"></script>
 
     <script>
+
       const canvas = document.getElementById('signature-pad')
       const input = document.getElementById('form_signature')
 
@@ -56,20 +86,45 @@
 
       const signaturePad = new SignaturePad(canvas)
 
-      document.getElementById('save-svg').addEventListener('click', function (e) {
-        if (signaturePad.isEmpty()) {
-          e.preventDefault()
-          return alert('Veuillez signer dans l\'encart de gauche.')
-        }
-
-        input.setAttribute('value', signaturePad.toDataURL('image/svg+xml'))
-      })
-
       document.getElementById('clear').addEventListener('click', function (e) {
         e.preventDefault()
         signaturePad.clear()
       })
 
+      Stripe.setPublishableKey('pk_test_uIIJApRrViMMdRc7nTsgFvFR00K9LpZi8q')
+      var $form = $('#form')
+
+      $form.submit(function (e) {
+        e.preventDefault()
+
+        if (signaturePad.isEmpty()) {
+          return alert('Veuillez signer dans l\'encart de gauche.')
+        } else {
+          input.setAttribute('value', signaturePad.toDataURL('image/svg+xml'))
+        }
+
+        $form.find('#send').attr('disabled', true)
+
+        if (document.getElementById('form_stripeToken') !== null) {
+
+          Stripe.card.createToken($form, function (status, response) {
+
+            $form.find('.payementError').remove()
+            if (response.error) {
+              $form.append('<div class="alert alert-danger payementError">' + response.error.message + '</div>')
+            } else {
+              const token = response.id
+
+              $('#form_stripeToken').val(token)
+
+            }
+          })
+        }
+
+        setTimeout(() => {
+          $form.get(0).submit()
+        }, 1000)
+      })
 
     </script>
 {% endblock %}

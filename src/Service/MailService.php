@@ -90,18 +90,11 @@ class MailService
 
         $mail = $this->prepareEmail($subject, $to, $body);
 
-        $attachment = [];
-
-        foreach ($rental->getPdf()['contract'] as $pdf) {
-
-            foreach (array_keys($pdf) as $date) {
-                $attachment[] = $pdf[$date];
-            }
-        }
+        $contracts = $rental->getPdf()['contract'];
 
         $attachment = [
             'Contrat de location n°'.$rental->getId()
-            => $attachment[count($attachment) - 1],
+            => $contracts[count($contracts) - 1],
         ];
 
         return $this->sendEmailWithAttachment($mail, $attachment);
