@@ -93,10 +93,14 @@ class User implements UserInterface
     private $carDealer;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $point;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $stripeToken;
-
     /**
      * User constructor.
      */
@@ -344,6 +348,17 @@ class User implements UserInterface
         return $this;
     }
 
+    public function getPoint(): ?int
+    {
+        return $this->point ?? 0;
+    }
+
+    public function setPoint(?int $point): self
+    {
+        $this->point = $point;
+
+        return $this;
+    }
     public function getStripeToken(): ?string
     {
         return $this->stripeToken;

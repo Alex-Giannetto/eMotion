@@ -265,10 +265,11 @@ class RentalController extends AbstractController
         $rental->setStartRentalDate($dateStart);
         $rental->setEstimatedReturnDate($dateEnd);
         $rental->setPrice(
-            $this->rentalService->getPriceWithPromotionForDate(
+            $this->rentalService->getPriceFinalPrice(
                 $vehicle,
                 $dateStart,
-                $dateEnd
+                $dateEnd,
+                $user
             )
         );
 
@@ -327,15 +328,13 @@ class RentalController extends AbstractController
                 $entityManager->flush();
             }
 
-
-            $clientToken = $user->getStripeToken();
-
-            if ($paymentService->chargeClient($user, $rental->getPrice())) {
+            if ($rental->getPrice() == 0 || $paymentService->chargeClient($user, $rental->getPrice())) {
                 $entityManager->persist($rental);
                 $entityManager->flush();
 
                 $city = $form->getData()['city'];
                 $signature = $form->getData()['signature'];
+
 
                 $rental = $this->PDFService->generateContract(
                     $rental,
@@ -348,7 +347,11 @@ class RentalController extends AbstractController
                     'Votre réservation à bien été enregistrée. Vous retrouverez votre contrat par mail'
                 );
 
+                $user = $this->rentalService->removeUserFidilityPointFromPrice($user, $rental);
+                $user = $this->rentalService->addFidilityPointFromPrice($user, $rental->getPrice());
+
                 $entityManager->persist($rental);
+                $entityManager->persist($user);
                 $entityManager->flush();
 
                 $this->mailService->sendMailContrat($rental);
@@ -406,7 +409,6 @@ class RentalController extends AbstractController
     function downloadRentalPDF(
         Rental $rental
     ) {
-        // todo : refractor this line !
         $pdfs = $rental->getPdf();
 
         if (!empty($pdfs['invoice'])) {
@@ -435,9 +437,9 @@ class RentalController extends AbstractController
     ) {
 
         // todo : rembourser le client
-//        $entityManager->remove($rental);
-//        $entityManager->flush();
-//
+        $entityManager->remove($rental);
+        $entityManager->flush();
+
         return $this->redirectToRoute('rental_list');
     }
 }

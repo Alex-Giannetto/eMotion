@@ -5,6 +5,7 @@ namespace App\Service;
 
 
 use App\Entity\Rental;
+use App\Entity\User;
 use App\Entity\Vehicle;
 use App\Repository\VehicleRepository;
 use DateTime;
@@ -46,7 +47,7 @@ class RentalService
         Vehicle $vehicle,
         DateTime $start,
         DateTime $end
-    ) {
+    ): float {
 
         $dayCount = $start->diff($end)->format("%a");
 
@@ -79,10 +80,51 @@ class RentalService
                 $rental->getStartRentalDate(),
                 $rental->getEstimatedReturnDate()
             )
-            )
+        )
         );
 
     }
 
+
+    public function addFidilityPointFromPrice(User $user, int $price): User
+    {
+        $user->setPoint($user->getPoint() + round($price));
+
+        return $user;
+    }
+
+    public function getPriceFinalPrice(Vehicle $vehicle, DateTime $start, DateTime $end, ?User $user): float
+    {
+        $promotedPrice = $this->getPriceWithPromotionForDate($vehicle, $start, $end);
+
+        if ($user) {
+            $pointInEuro = $user->getPoint() * 0.05;
+
+            $finalPrice = $promotedPrice - $pointInEuro;
+
+            return $finalPrice > 0 ? $finalPrice : 0;
+        }
+
+        return $promotedPrice;
+    }
+
+    public function removeUserFidilityPointFromPrice(User $user, Rental $rental): User
+    {
+
+        $priceWithoutPoints = $this->getPriceWithPromotionForDate(
+            $rental->getVehicle(),
+            $rental->getStartRentalDate(),
+            $rental->getEstimatedReturnDate(),
+            );
+
+        $diff = $priceWithoutPoints - $rental->getPrice();
+
+        $nbPoints = $diff / 0.05;
+
+        $userPoints = $user->getPoint() - $nbPoints;
+        $user->setPoint($userPoints > 0 ? $userPoints : 0);
+
+        return $user;
+    }
 
 }
