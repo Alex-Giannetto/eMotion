@@ -35,7 +35,7 @@ composer install
 
 
 
-## docker-compoose.yml
+## docker-compose.yml
 ```
 version: '3.6'
 services:
