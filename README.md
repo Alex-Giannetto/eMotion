@@ -36,7 +36,7 @@ composer install
 
 
 ## docker-compoose.yml
-
+```
 version: '3.6'
 services:
     web:
@@ -66,3 +66,4 @@ services:
             - '3306:3306'
         environment:
             - MYSQL_ROOT_PASSWORD=root
+```
