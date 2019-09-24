@@ -114,7 +114,7 @@ class RentalService
         $priceWithoutPoints = $this->getPriceWithPromotionForDate(
             $rental->getVehicle(),
             $rental->getStartRentalDate(),
-            $rental->getEstimatedReturnDate(),
+            $rental->getEstimatedReturnDate()
             );
 
         $diff = $priceWithoutPoints - $rental->getPrice();
